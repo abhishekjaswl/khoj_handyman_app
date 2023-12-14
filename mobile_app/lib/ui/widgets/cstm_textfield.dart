@@ -79,7 +79,7 @@ class _CstmTextFieldState extends State<CstmTextField> {
           if (value == null || value.isEmpty) {
             return 'Please enter ${widget.text}';
           }
-          if (widget.text == 'Email' &&
+          if (widget.text == 'Email Address' &&
               !RegExp(r'\S+@\S+\.\S+').hasMatch(widget.mainController!.text)) {
             return 'Invalid Email.';
           }

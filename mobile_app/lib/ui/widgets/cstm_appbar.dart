@@ -15,7 +15,6 @@ class _CstmAppBarState extends State<CstmAppBar> {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      leadingWidth: 80,
       leading: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Builder(
@@ -36,7 +35,6 @@ class _CstmAppBarState extends State<CstmAppBar> {
       ),
       onStretchTrigger: widget.stretchTrigger,
       collapsedHeight: 80,
-      expandedHeight: 120,
       floating: true,
       pinned: true,
       titleSpacing: 0,
@@ -44,11 +42,7 @@ class _CstmAppBarState extends State<CstmAppBar> {
       toolbarHeight: 80,
       stretch: true,
       flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [
-          StretchMode.fadeTitle,
-        ],
         centerTitle: true,
-        expandedTitleScale: 1.2,
         title: Text(
           'khoj',
           textAlign: TextAlign.center,

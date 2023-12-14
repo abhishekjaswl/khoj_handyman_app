@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:mobile_app/ui/widgets/cstm_datepicker.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -17,15 +19,16 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final AuthService authService = AuthService();
 
+  final _registerFormKey = GlobalKey<FormState>();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final OtpFieldController _otpController = OtpFieldController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final OtpFieldController _otpController = OtpFieldController();
 
   String? userType;
   bool isLoading = false;
@@ -34,7 +37,33 @@ class _RegisterPageState extends State<RegisterPage> {
   void _tapped(int step) =>
       step != 3 ? setState(() => _currentStep = step) : null;
 
-  void _continued() => _currentStep < 4 ? setState(() => _currentStep++) : null;
+  Future<void> _continued() async {
+    switch (_currentStep) {
+      case 2:
+        String emailCheckResult = await checkEmail();
+        if (emailCheckResult == 'ok') {
+          setState(() => _currentStep++);
+        } else {
+          Fluttertoast.showToast(
+            msg: emailCheckResult,
+            backgroundColor: Colors.red,
+            fontSize: 16,
+          );
+        }
+        break;
+      case < 4:
+        setState(() => _currentStep++);
+        break;
+      case 4:
+        print('FirstName: ${_firstNameController.text}');
+        print('Pass: ${_passwordController.text}');
+        print('ConPass: ${_confirmPasswordController.text}');
+        if (_registerFormKey.currentState!.validate()) {
+          registerUser();
+        }
+        break;
+    }
+  }
 
   void _cancel() {
     switch (_currentStep) {
@@ -47,13 +76,38 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void registerUser() {
-    authService.loginUser(
+  Future<String> checkEmail() async {
+    return await authService.checkEmail(
       context: context,
       email: _emailController.text,
+    );
+  }
+
+  void registerUser() async {
+    print(userType);
+    await authService.registerUser(
+      context: context,
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      dob: _dobController.text,
+      role: userType!,
+      email: _emailController.text,
+      phone: _phoneController.text,
       password: _passwordController.text,
     );
   }
+
+  // @override
+  // void dispose() {
+  //   _firstNameController.dispose();
+  //   _lastNameController.dispose();
+  //   _dobController.dispose();
+  //   _emailController.dispose();
+  //   _phoneController.dispose();
+  //   _passwordController.dispose();
+  //   _confirmPasswordController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -71,193 +125,182 @@ class _RegisterPageState extends State<RegisterPage> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          Column(
-            children: [
-              Stepper(
-                physics: const NeverScrollableScrollPhysics(),
-                type: StepperType.vertical,
-                currentStep: _currentStep,
-                onStepTapped: _tapped,
-                onStepContinue: _continued,
-                onStepCancel: _cancel,
-                steps: <Step>[
-                  _buildStep(
-                    title: 'Personal Information',
-                    fields: [
-                      FieldInfo(
-                        'First Name',
-                        _firstNameController,
-                        TextInputType.text,
-                      ),
-                      FieldInfo(
-                        'Last Name',
-                        _lastNameController,
-                        TextInputType.text,
-                      ),
-                      FieldInfo(
-                        'Date of Birth',
-                        _dobController,
-                        TextInputType.datetime,
-                      ),
-                    ],
-                    step: 0,
-                  ),
-                  Step(
-                    title: const Text('User Type'),
-                    content: Column(
-                      children: <Widget>[
-                        RadioListTile(
-                          activeColor: Theme.of(context).colorScheme.primary,
-                          title: const Text('User'),
-                          value: 'user',
-                          groupValue: userType,
-                          onChanged: (value) {
-                            setState(() {
-                              userType = value.toString();
-                            });
-                          },
+          Form(
+            key: _registerFormKey,
+            child: Column(
+              children: [
+                Stepper(
+                  physics: const NeverScrollableScrollPhysics(),
+                  type: StepperType.vertical,
+                  currentStep: _currentStep,
+                  onStepTapped: _tapped,
+                  onStepContinue: _continued,
+                  onStepCancel: _cancel,
+                  steps: <Step>[
+                    Step(
+                      title: const Text('Personal Information'),
+                      content: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Column(
+                          children: <Widget>[
+                            CstmTextField(
+                              mainController: _firstNameController,
+                              text: 'First Name',
+                              inputType: TextInputType.name,
+                            ),
+                            CstmTextField(
+                              mainController: _lastNameController,
+                              text: 'Last Name',
+                              inputType: TextInputType.name,
+                            ),
+                            CstmDatePicker(
+                              controller: _dobController,
+                              onDateSelected: (formattedDate) {
+                                setState(() {
+                                  _dobController.text = formattedDate;
+                                });
+                              },
+                            )
+                          ],
                         ),
-                        RadioListTile(
-                          activeColor: Theme.of(context).colorScheme.primary,
-                          title: const Text('Worker'),
-                          value: 'worker',
-                          groupValue: userType,
-                          onChanged: (value) {
-                            setState(() {
-                              userType = value.toString();
-                            });
-                          },
-                        ),
-                      ],
+                      ),
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 1
+                          ? StepState.complete
+                          : StepState.disabled,
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 2
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
-                  _buildStep(
-                    title: 'Email and Phone',
-                    fields: [
-                      FieldInfo(
-                        'Email Address',
-                        _emailController,
-                        TextInputType.emailAddress,
-                      ),
-                      FieldInfo(
-                        'Phone Number',
-                        _phoneController,
-                        TextInputType.number,
-                      ),
-                    ],
-                    step: 2,
-                  ),
-                  Step(
-                    title: const Text('Two factor authentication'),
-                    content: Column(
-                      children: <Widget>[
-                        OTPTextField(
-                          otpFieldStyle: OtpFieldStyle(
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.2),
-                            borderColor: Theme.of(context).colorScheme.primary,
-                            focusBorderColor:
-                                Theme.of(context).colorScheme.primary,
+                    Step(
+                      title: const Text('User Type'),
+                      content: Column(
+                        children: <Widget>[
+                          RadioListTile(
+                            activeColor: Theme.of(context).colorScheme.primary,
+                            title: const Text('User'),
+                            value: 'user',
+                            groupValue: userType,
+                            onChanged: (value) {
+                              setState(() {
+                                userType = value.toString();
+                              });
+                            },
                           ),
-                          controller: _otpController,
-                          length: 5,
-                          width: MediaQuery.of(context).size.width,
-                          textFieldAlignment: MainAxisAlignment.spaceAround,
-                          fieldWidth: 45,
-                          fieldStyle: FieldStyle.box,
-                          style: const TextStyle(fontSize: 20),
-                          onChanged: (pin) {
-                            // print("Changed: " + pin);
-                          },
-                          onCompleted: (pin) {
-                            // print("Completed: " + pin);
-                            _continued();
-                          },
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Text(
-                            '* Please enter the OTP we have sent you in the email. *',
-                            style: TextStyle(fontStyle: FontStyle.italic),
+                          RadioListTile(
+                            activeColor: Theme.of(context).colorScheme.primary,
+                            title: const Text('Worker'),
+                            value: 'worker',
+                            groupValue: userType,
+                            onChanged: (value) {
+                              setState(() {
+                                userType = value.toString();
+                              });
+                            },
                           ),
-                        )
-                      ],
+                        ],
+                      ),
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 2
+                          ? StepState.complete
+                          : StepState.disabled,
                     ),
-                    isActive: _currentStep >= 0,
-                    state: _currentStep >= 4
-                        ? StepState.complete
-                        : StepState.disabled,
-                  ),
-                  _buildStep(
-                    title: 'Create a password',
-                    fields: [
-                      FieldInfo(
-                        'Password',
-                        _passwordController,
-                        TextInputType.visiblePassword,
+                    Step(
+                      title: const Text('Email and Phone'),
+                      content: Column(
+                        children: <Widget>[
+                          CstmTextField(
+                            mainController: _emailController,
+                            text: 'Email Address',
+                            inputType: TextInputType.emailAddress,
+                          ),
+                          CstmTextField(
+                            mainController: _phoneController,
+                            text: 'Phone Number',
+                            inputType: TextInputType.number,
+                          ),
+                        ],
                       ),
-                      FieldInfo(
-                        'Confirm Password',
-                        _confirmPasswordController,
-                        TextInputType.visiblePassword,
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 3
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                    Step(
+                      title: const Text('Two factor authentication'),
+                      content: Column(
+                        children: <Widget>[
+                          OTPTextField(
+                            otpFieldStyle: OtpFieldStyle(
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.2),
+                              borderColor:
+                                  Theme.of(context).colorScheme.primary,
+                              focusBorderColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
+                            controller: _otpController,
+                            length: 5,
+                            width: MediaQuery.of(context).size.width,
+                            textFieldAlignment: MainAxisAlignment.spaceAround,
+                            fieldWidth: 45,
+                            fieldStyle: FieldStyle.box,
+                            style: const TextStyle(fontSize: 20),
+                            onChanged: (pin) {
+                              // print("Changed: " + pin);
+                            },
+                            onCompleted: (pin) {
+                              // print("Completed: " + pin);
+                              _continued();
+                            },
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(20.0),
+                            child: Text(
+                              '* Please enter the OTP we have sent you in the email. *',
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            ),
+                          )
+                        ],
                       ),
-                    ],
-                    step: 4,
-                  ),
-                ],
-              ),
-              CstmLoginSwitcher(
-                preText: 'Already have an account?',
-                onpressed: () => Navigator.pop(context),
-                suffText: 'Sign In',
-              ),
-            ],
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 4
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                    Step(
+                      title: const Text('Create a password'),
+                      content: Column(
+                        children: <Widget>[
+                          CstmTextField(
+                            mainController: _passwordController,
+                            text: 'Password',
+                            inputType: TextInputType.visiblePassword,
+                          ),
+                          CstmTextField(
+                            mainController: _confirmPasswordController,
+                            confirmController: _passwordController,
+                            text: 'Confirm Password',
+                            inputType: TextInputType.visiblePassword,
+                          ),
+                        ],
+                      ),
+                      isActive: _currentStep >= 0,
+                      state: _currentStep >= 5
+                          ? StepState.complete
+                          : StepState.disabled,
+                    ),
+                  ],
+                ),
+                CstmLoginSwitcher(
+                  preText: 'Already have an account?',
+                  onpressed: () => Navigator.pop(context),
+                  suffText: 'Sign In',
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-
-  Step _buildStep(
-      {required String title,
-      required List<FieldInfo> fields,
-      required int step}) {
-    return Step(
-      title: Text(
-        title,
-      ),
-      content: Padding(
-        padding: const EdgeInsets.only(top: 4),
-        child: Column(
-          children: fields
-              .map((field) => CstmTextField(
-                    mainController: field.controller,
-                    text: field.label,
-                    inputType: field.inputType,
-                  ))
-              .toList(),
-        ),
-      ),
-      isActive: _currentStep >= 0,
-      state: _currentStep >= step + 1 ? StepState.complete : StepState.disabled,
-    );
-  }
-}
-
-class FieldInfo {
-  final String label;
-  final TextEditingController controller;
-  final TextInputType inputType;
-
-  FieldInfo(
-    this.label,
-    this.controller,
-    this.inputType,
-  );
 }

@@ -15,19 +15,26 @@ const userSchema = new Schema({
         lowercase: true,
         required: true
     },
+    dob: {
+        type: String,
+    },
+    role: {
+        type: String,
+        enum: ['user', 'worker', 'admin']
+    },
     email: {
         type: String,
         lowercase: true,
         required: true,
     },
+    phone: {
+        type: Number,
+    },
     password: {
         type: String,
         required: true
     },
-    phone: {
-        type: Number,
-    },
-    profilePictureUrl: {
+    profilePicUrl: {
         type: String,
         default: ''
     },
@@ -50,13 +57,10 @@ const userSchema = new Schema({
     status: {
         type: String,
         lowercase: true,
-        enum: ['verified', 'unverified'],
+        enum: ['verified', 'pending', 'unverified'],
         default: 'unverified'
     },
-    role: {
-        type: String,
-        enum: ['user', 'worker', 'admin']
-    }
+
 });
 
 userSchema.pre('save', async function () {

@@ -16,11 +16,9 @@ exports.login = async (req, res, next) => {
             return next({ error: 'Invalid Password!' });
         }
 
-        const worker = await WorkerModel.findOne({ _id: user._id })
+        const worker = await WorkerModel.findOne({ _id: user._id });
 
-        const token = AuthService.generateToken(user._id);
-
-        res.status(200).json({ user, worker, token });
+        res.status(200).json({ user, worker });
 
     } catch (error) {
         return next(error);
@@ -29,46 +27,40 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password, phone, role } = req.body;
+        const { firstName, lastName, dob, role, email, phone, password } = req.body;
+
+        console.log(role);
 
         const existingUser = await AuthService.checkUser(email);
 
         if (existingUser) {
             return next({ msg: 'User already exists.' });
         }
-        const user = await AuthService.registerUser(firstName, lastName, email, password, phone, role);
+        const user = await AuthService.registerUser(firstName, lastName, dob, role, email, phone, password);
+
+        let worker; // Initialize the worker variable
 
         if (role == 'worker') {
-            const worker = new WorkerModel({ _id: user._id })
-            await worker.save();
+            const workerInstance = new WorkerModel({ _id: user._id });
+            worker = await workerInstance.save(); // Save the worker instance and assign it to the variable
         }
-        res.status(200).json({ user: user._id });
+        res.status(200).json({ user, worker });
     } catch (error) {
         return next(error);
     }
 }
 
-exports.currentUser = async (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
+exports.checkEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        const existingUser = await AuthService.checkUser(email);
 
-    if (token) {
-        jwt.verify(token, 'khojsecret', async (err, decodedToken) => {
-            if (err) {
-                next();
-            }
-            else {
-                console.log(decodedToken);
-                const user = await AuthService.checkUser(email);
+        if (existingUser) {
+            return next({ msg: 'User already exists.' });
+        }
+        res.status(200).json({ existingUser });
 
-                if (!user) {
-                    return next({ error: 'User does not exist.' });
-                }
-                const worker = await WorkerModel.findOne({ _id: user._id })
-
-                res.status(200).json({ user, worker });
-            }
-        });
-    } else {
-        return res.status(401).send(err);
+    } catch {
+        return next(error);
     }
 }

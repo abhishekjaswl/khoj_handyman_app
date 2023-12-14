@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
+import 'package:provider/provider.dart';
 
+import '../../../core/providers/currentuser_provider.dart';
 import '../../../core/services/auth_service.dart';
-import '../../../core/services/user_service.dart';
+import '../../../core/services/booking_service.dart';
 import '../../widgets/cstm_appbar.dart';
 import '../../widgets/cstm_drawer.dart';
 
@@ -15,20 +17,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<User>> _userListFuture;
+  late Future<List<User>> _workerListFuture;
   final AuthService authService = AuthService();
+
+  List<Category> categories = [
+    Category(name: 'Plumbing', icon: Icons.plumbing),
+    Category(name: 'Electrical', icon: Icons.electrical_services),
+    Category(name: 'Cleaning Services', icon: Icons.cleaning_services),
+    Category(name: 'Carpentry', icon: Icons.carpenter),
+    Category(name: 'Painting', icon: Icons.format_paint),
+    Category(name: 'Landscaping', icon: Icons.landscape),
+    Category(name: 'Home Renovation', icon: Icons.home_repair_service),
+    // Add more categories as needed
+  ];
 
   @override
   void initState() {
     super.initState();
-    _userListFuture = _getUsers();
+    _workerListFuture = _getWorkers();
   }
 
-  Future<List<User>> _getUsers() async {
+  Future<List<User>> _getWorkers() async {
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? token = prefs.getString('token');
-      return await UserService.getUsers(token, authService, context);
+      return await BookingService.getVerWorkers();
     } catch (e) {
       rethrow;
     }
@@ -45,18 +56,127 @@ class _HomePageState extends State<HomePage> {
             stretchTrigger: () {
               return Future.delayed(const Duration(seconds: 1), () {
                 setState(() {
-                  _userListFuture =
-                      _getUsers(); // Update the future to trigger a rebuild
+                  _workerListFuture =
+                      _getWorkers(); // Update the future to trigger a rebuild
                 });
               });
             },
           ),
-          const SliverToBoxAdapter(
-            child: Text('Welcome back User!'),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: Card(
+                    margin: const EdgeInsets.all(8),
+                    color: Theme.of(context).colorScheme.background,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome Back, ${Provider.of<CurrentUser>(context).user.firstName}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Text(
+                            'What are we up to today?',
+                            style: TextStyle(fontSize: 15),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  color: Theme.of(context).colorScheme.background,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          'Categories',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 160, // Adjust the height as needed
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categories.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            Category category = categories[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Handle category selection
+                                },
+                                child: Container(
+                                  width: 120,
+                                  decoration: BoxDecoration(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Icon(
+                                              category.icon,
+                                              size: 40,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        category.name,
+                                        style: const TextStyle(fontSize: 16),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           SliverToBoxAdapter(
             child: FutureBuilder<List<User>>(
-              future: _userListFuture,
+              future: _workerListFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SizedBox(
@@ -94,9 +214,8 @@ class _HomePageState extends State<HomePage> {
                     itemCount: userList.length,
                     itemBuilder: (BuildContext context, int index) {
                       User user = userList[index];
-                      return Text(
-                        user.firstName,
-                        style: TextStyle(height: 50),
+                      return CstmCard(
+                        user: user,
                       );
                     },
                   );
@@ -108,4 +227,11 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class Category {
+  final String name;
+  final IconData icon;
+
+  Category({required this.name, required this.icon});
 }

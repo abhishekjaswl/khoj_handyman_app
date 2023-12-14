@@ -3,12 +3,22 @@ class User {
   String firstName;
   String lastName;
   String email;
+  int phone;
+  String dob;
+  String role;
+  String status;
+  String? profilePicUrl;
 
   User(
     this.id,
     this.firstName,
     this.lastName,
     this.email,
+    this.phone,
+    this.dob,
+    this.role,
+    this.status,
+    this.profilePicUrl,
   );
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -17,6 +27,11 @@ class User {
       (json['firstName']),
       (json['lastName']),
       (json['email']),
+      (json['phone']),
+      (json['dob']),
+      (json['role']),
+      (json['status']),
+      (json['profilePicUrl']),
     );
   }
 
@@ -25,5 +40,10 @@ class User {
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
+        'phone': phone,
+        'dob': dob,
+        'role': role,
+        'status': status,
+        'profilePicUrl': profilePicUrl,
       };
 }

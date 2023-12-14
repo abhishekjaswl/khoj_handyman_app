@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 ThemeData darkTheme = ThemeData(
   fontFamily: 'Comfortaa',
   brightness: Brightness.dark,
+  scaffoldBackgroundColor: Colors.black,
   drawerTheme: const DrawerThemeData(
     backgroundColor: Colors.black,
   ),
-  scaffoldBackgroundColor: Colors.black,
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.black,
   ),
@@ -15,8 +15,8 @@ ThemeData darkTheme = ThemeData(
     foregroundColor: Colors.black,
   ),
   colorScheme: ColorScheme.dark(
-    background: Colors.white,
+    background: Colors.grey[900]!,
     primary: Colors.white,
-    secondary: Colors.grey[900]!,
+    secondary: Colors.grey[500]!,
   ),
 );

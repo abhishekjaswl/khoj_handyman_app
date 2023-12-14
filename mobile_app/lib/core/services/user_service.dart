@@ -1,41 +1,78 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloudinary_public/cloudinary_public.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile_app/core/models/user_model.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import '../../utils/config/config.dart';
-import 'auth_service.dart';
+import '../providers/currentuser_provider.dart';
 
 class UserService {
-  static Future<List<User>> getUsers(
-      String? token, AuthService authService, context) async {
-    try {
-      final response = await http.get(
-        Uri.parse(allUsersApi),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
+  Future<void> uploadProfilePic(
+      {required ImageSource source, required context, required id}) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      final imageFile = File(pickedFile.path);
+      final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
+
+      final result = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(
+          imageFile.path,
+          folder:
+              // ignore: use_build_context_synchronously
+              'users/ProfilePic/$id',
+        ),
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
-        final List<dynamic> userList = jsonData["allUsers"];
-        return userList.map((json) => User.fromJson(json)).toList();
-      } else if (response.statusCode == 401) {
-        authService.logoutUser(context: context);
-        return List<User>.empty();
-      } else {
-        throw Exception(
-            'Failed to load users. Server returned ${response.statusCode}');
+      final regBody = {
+        'id': id,
+        'profilePicUrl': result.secureUrl,
+      };
+
+      try {
+        final response = await http.post(
+          Uri.parse(uploadProfilePicApi),
+          body: jsonEncode(regBody),
+        );
+
+        final jsonResponse = jsonDecode(response.body);
+
+        if (response.statusCode == 200) {
+          // ignore: use_build_context_synchronously
+          Provider.of<CurrentUser>(context, listen: false).updateProfilePicUrl(
+              result
+                  .secureUrl); // update the profile picture URL in the provider's state
+          Fluttertoast.showToast(
+            msg: jsonResponse['msg'],
+            backgroundColor: Colors.green,
+            fontSize: 16,
+          );
+        } else {
+          Fluttertoast.showToast(
+            msg: jsonResponse['error'],
+            backgroundColor: Colors.red,
+            fontSize: 16,
+          );
+        }
+      } catch (e) {
+        print(e);
+        Fluttertoast.showToast(
+          msg: e.toString(),
+          backgroundColor: Colors.red,
+          fontSize: 16,
+        );
       }
-    } catch (e) {
-      if (e is SocketException) {
-        throw Exception(
-            'Failed to connect to the server. Please check your internet connection.');
-      } else {
-        throw Exception('Failed to load users: $e');
-      }
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Error uploading image to Cloudinary',
+        backgroundColor: Colors.red,
+        fontSize: 16,
+      );
     }
   }
 }

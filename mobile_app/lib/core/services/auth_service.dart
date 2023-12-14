@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../ui/pages/loginregister/login.dart';
 import '../../utils/config/config.dart';
@@ -26,8 +25,6 @@ class AuthService {
     };
 
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       var response = await http
           .post(Uri.parse(login),
               headers: {'Content-Type': 'application/json'},
@@ -36,7 +33,7 @@ class AuthService {
 
       var jsonResponse = jsonDecode(response.body);
 
-      if (jsonResponse['token'] != null) {
+      if (jsonResponse['user'] != null) {
         Fluttertoast.showToast(
           msg: "Logging in",
           backgroundColor: Colors.green,
@@ -46,12 +43,9 @@ class AuthService {
         // ignore: use_build_context_synchronously
         context.read<CurrentUser>().setUser(userInfo);
 
-        prefs.setString('token', jsonResponse['token']);
-
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        print(jsonResponse['error']);
         Fluttertoast.showToast(
           msg: jsonResponse['error'],
           backgroundColor: Colors.red,
@@ -66,8 +60,6 @@ class AuthService {
         fontSize: 16,
       );
     } catch (e) {
-      print(e);
-
       Fluttertoast.showToast(
         msg: e.toString(),
         backgroundColor: Colors.red,
@@ -83,6 +75,7 @@ class AuthService {
     required String firstName,
     required String lastName,
     required String dob,
+    required String role,
     required String email,
     required String phone,
     required String password,
@@ -92,14 +85,13 @@ class AuthService {
       'firstName': firstName,
       'lastName': lastName,
       'dob': dob,
+      'role': role,
       'email': email,
       'phone': phone,
       'password': password,
     };
 
     try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
       var response = await http
           .post(Uri.parse(register),
               headers: {'Content-Type': 'application/json'},
@@ -108,17 +100,18 @@ class AuthService {
 
       var jsonResponse = jsonDecode(response.body);
 
-      if (jsonResponse['token'] != null) {
+      print(jsonResponse);
+
+      if (jsonResponse['user'] != null) {
         Fluttertoast.showToast(
           msg: "Registration Complete!",
           backgroundColor: Colors.green,
           fontSize: 16,
         );
         User userInfo = User.fromJson(jsonResponse["user"]);
+        print(userInfo);
         // ignore: use_build_context_synchronously
         context.read<CurrentUser>().setUser(userInfo);
-
-        prefs.setString('token', jsonResponse['token']);
 
         // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, '/home');
@@ -137,6 +130,7 @@ class AuthService {
         fontSize: 16,
       );
     } catch (e) {
+      print(e.toString());
       Fluttertoast.showToast(
         msg: e.toString(),
         backgroundColor: Colors.red,
@@ -147,12 +141,34 @@ class AuthService {
     }
   }
 
+  Future<String> checkEmail({
+    required BuildContext context,
+    required String email,
+  }) async {
+    var regBody = {'email': email};
+    try {
+      var response = await http
+          .post(Uri.parse(checkEmailApi),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(regBody))
+          .timeout(const Duration(seconds: 20));
+
+      switch (response.statusCode) {
+        case 200:
+          return 'ok';
+        case 400:
+          return 'This email is already in use.';
+        default:
+          return "Something went wrong!";
+      }
+    } catch (e) {
+      return 'Something went wrong!';
+    }
+  }
+
   Future<void> logoutUser({
     required BuildContext context,
   }) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('token');
-
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));

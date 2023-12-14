@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 ThemeData lightTheme = ThemeData(
   fontFamily: 'Comfortaa',
   brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.grey[300]!,
+  scaffoldBackgroundColor: Colors.white,
   drawerTheme: DrawerThemeData(
     backgroundColor: Colors.grey[300]!,
   ),
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.grey[300]!,
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.white,
     foregroundColor: Colors.black,
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
