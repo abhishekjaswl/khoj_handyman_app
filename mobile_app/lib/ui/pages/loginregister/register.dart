@@ -29,35 +29,44 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _confirmPasswordController =
       TextEditingController();
   final OtpFieldController _otpController = OtpFieldController();
+  String userType = 'user';
 
-  String? userType;
-  bool isLoading = false;
   int _currentStep = 0;
 
-  void _tapped(int step) =>
-      step != 3 ? setState(() => _currentStep = step) : null;
+  void _tapped(int step) => setState(() => _currentStep = step);
 
   Future<void> _continued() async {
     switch (_currentStep) {
       case 2:
-        String emailCheckResult = await checkEmail();
-        if (emailCheckResult == 'ok') {
-          setState(() => _currentStep++);
-        } else {
-          Fluttertoast.showToast(
-            msg: emailCheckResult,
-            backgroundColor: Colors.red,
-            fontSize: 16,
+        if (_emailController.text.isNotEmpty &&
+            _firstNameController.text.isNotEmpty &&
+            _lastNameController.text.isNotEmpty) {
+          String otpResult = await authService.getregisOTP(
+            context: context,
+            email: _emailController.text,
+            firstName: _firstNameController.text,
+            lastName: _lastNameController.text,
           );
+          if (otpResult == 'ok') {
+            setState(() => _currentStep++);
+          } else {
+            Fluttertoast.showToast(
+              msg: otpResult,
+              backgroundColor: Colors.red,
+              fontSize: 16,
+            );
+          }
+        } else {
+          _registerFormKey.currentState!.validate();
         }
         break;
+      case 3:
+        print('lol');
+
       case < 4:
         setState(() => _currentStep++);
         break;
       case 4:
-        print('FirstName: ${_firstNameController.text}');
-        print('Pass: ${_passwordController.text}');
-        print('ConPass: ${_confirmPasswordController.text}');
         if (_registerFormKey.currentState!.validate()) {
           registerUser();
         }
@@ -76,38 +85,50 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  Future<String> checkEmail() async {
-    return await authService.checkEmail(
+  void verifyOTP(pin) async {
+    print('fuck you');
+    _otpController.clear;
+    String verifyResult = await authService.verifyOTP(
       context: context,
       email: _emailController.text,
+      otp: pin,
+      purpose: 'registration',
     );
+    if (verifyResult == 'ok') {
+      _continued();
+    } else {
+      Fluttertoast.showToast(
+        msg: verifyResult,
+        backgroundColor: Colors.red,
+        fontSize: 16,
+      );
+    }
   }
 
   void registerUser() async {
-    print(userType);
     await authService.registerUser(
       context: context,
       firstName: _firstNameController.text,
       lastName: _lastNameController.text,
       dob: _dobController.text,
-      role: userType!,
+      role: userType,
       email: _emailController.text,
       phone: _phoneController.text,
       password: _passwordController.text,
     );
   }
 
-  // @override
-  // void dispose() {
-  //   _firstNameController.dispose();
-  //   _lastNameController.dispose();
-  //   _dobController.dispose();
-  //   _emailController.dispose();
-  //   _phoneController.dispose();
-  //   _passwordController.dispose();
-  //   _confirmPasswordController.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _dobController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +227,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       title: const Text('Email and Phone'),
                       content: Column(
                         children: <Widget>[
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: Text(
+                              '* We will send the OTP for next step at this email. *',
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            ),
+                          ),
                           CstmTextField(
                             mainController: _emailController,
                             text: 'Email Address',
@@ -248,9 +276,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             onChanged: (pin) {
                               // print("Changed: " + pin);
                             },
-                            onCompleted: (pin) {
-                              // print("Completed: " + pin);
-                              _continued();
+                            onCompleted: (value) {
+                              verifyOTP(value);
                             },
                           ),
                           const Padding(
@@ -263,9 +290,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         ],
                       ),
                       isActive: _currentStep >= 0,
-                      state: _currentStep >= 4
-                          ? StepState.complete
-                          : StepState.disabled,
+                      state: StepState.disabled,
                     ),
                     Step(
                       title: const Text('Create a password'),

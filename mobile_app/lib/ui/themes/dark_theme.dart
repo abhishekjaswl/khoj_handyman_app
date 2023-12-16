@@ -4,12 +4,9 @@ ThemeData darkTheme = ThemeData(
   fontFamily: 'Comfortaa',
   brightness: Brightness.dark,
   scaffoldBackgroundColor: Colors.black,
-  drawerTheme: const DrawerThemeData(
-    backgroundColor: Colors.black,
-  ),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.black,
-  ),
+  drawerTheme: const DrawerThemeData(backgroundColor: Colors.black),
+  appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
+  cardTheme: CardTheme(color: Colors.grey[900]!),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.white,
     foregroundColor: Colors.black,

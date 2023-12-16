@@ -5,6 +5,9 @@ const AuthController = require('../controllers/auth.controller');
 router.post('/login', AuthController.login);
 router.post('/register', AuthController.register);
 router.post('/checkEmail', AuthController.checkEmail);
+router.post('/getRegisOTP', AuthController.getRegisOTP);
+router.post('/getResetOTP', AuthController.getResetOTP);
+router.get('/verifyOTP/:email/:otp/:purpose', AuthController.verifyOTP);
 
 // router.get('/:id', (req, res) => {
 //     res.json({ msg: 'GET one user data' })

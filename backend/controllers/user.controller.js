@@ -13,9 +13,9 @@ exports.uploadProfilePic = async (req, res, next) => {
     try {
         const { id, profilePicUrl } = req.body;
 
-        await UserModel.findOneAndUpdate({ _id: id }, { profilePicUrl: profilePicUrl }, { new: true, runValidators: true })
+        await UserModel.findOneAndUpdate({ _id: id }, { profilePicUrl }, { new: true, runValidators: true })
 
-        res.status(200).json({ msg: 'Profile picture uploaded successfully.' });
+        res.status(200).json('Profile picture uploaded successfully.');
 
     } catch (error) {
         return next(error);

@@ -31,9 +31,8 @@ class AuthService {
               body: jsonEncode(regBody))
           .timeout(const Duration(seconds: 20));
 
-      var jsonResponse = jsonDecode(response.body);
-
-      if (jsonResponse['user'] != null) {
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
         Fluttertoast.showToast(
           msg: "Logging in",
           backgroundColor: Colors.green,
@@ -47,7 +46,7 @@ class AuthService {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         Fluttertoast.showToast(
-          msg: jsonResponse['error'],
+          msg: response.body,
           backgroundColor: Colors.red,
           fontSize: 16,
         );
@@ -98,18 +97,15 @@ class AuthService {
               body: jsonEncode(regBody))
           .timeout(const Duration(seconds: 20));
 
-      var jsonResponse = jsonDecode(response.body);
-
-      print(jsonResponse);
-
-      if (jsonResponse['user'] != null) {
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
         Fluttertoast.showToast(
           msg: "Registration Complete!",
           backgroundColor: Colors.green,
           fontSize: 16,
         );
         User userInfo = User.fromJson(jsonResponse["user"]);
-        print(userInfo);
+
         // ignore: use_build_context_synchronously
         context.read<CurrentUser>().setUser(userInfo);
 
@@ -117,7 +113,7 @@ class AuthService {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         Fluttertoast.showToast(
-          msg: jsonResponse['error'],
+          msg: response.body,
           backgroundColor: Colors.red,
           fontSize: 16,
         );
@@ -130,7 +126,6 @@ class AuthService {
         fontSize: 16,
       );
     } catch (e) {
-      print(e.toString());
       Fluttertoast.showToast(
         msg: e.toString(),
         backgroundColor: Colors.red,
@@ -141,14 +136,20 @@ class AuthService {
     }
   }
 
-  Future<String> checkEmail({
+  Future<String> getregisOTP({
     required BuildContext context,
     required String email,
+    required String firstName,
+    required String lastName,
   }) async {
-    var regBody = {'email': email};
+    var regBody = {
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+    };
     try {
       var response = await http
-          .post(Uri.parse(checkEmailApi),
+          .post(Uri.parse(getRegisOTP),
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode(regBody))
           .timeout(const Duration(seconds: 20));
@@ -157,7 +158,37 @@ class AuthService {
         case 200:
           return 'ok';
         case 400:
-          return 'This email is already in use.';
+          return response.body;
+        default:
+          return "Something went wrong!";
+      }
+    } catch (e) {
+      return 'Something went wrong!';
+    }
+  }
+
+  Future<String> verifyOTP({
+    required BuildContext context,
+    required String email,
+    required String otp,
+    required String purpose,
+  }) async {
+    try {
+      var response = await http.get(
+        Uri.parse('$verifyOTPApi/$email/$otp/$purpose'),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 20));
+
+      switch (response.statusCode) {
+        case 200:
+          Fluttertoast.showToast(
+            msg: 'OTP verified!',
+            backgroundColor: Colors.green,
+            fontSize: 16,
+          );
+          return 'ok';
+        case 400:
+          return response.body;
         default:
           return "Something went wrong!";
       }

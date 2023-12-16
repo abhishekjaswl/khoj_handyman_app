@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/ui/pages/profile/profile.dart';
+import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:avatars/avatars.dart';
 
@@ -36,13 +37,36 @@ class _CstmDrawerState extends State<CstmDrawer> {
                 style: const TextStyle(fontSize: 18),
               ),
               accountEmail: Text(Provider.of<CurrentUser>(context).user.email),
-              currentAccountPictureSize: const Size.square(60),
-              currentAccountPicture: Avatar(
-                  shape: AvatarShape.circle(30),
-                  name: Provider.of<CurrentUser>(context).user.firstName,
-                  placeholderColors: const [
-                    Colors.grey,
-                  ]),
+              currentAccountPictureSize: const Size.square(70),
+              currentAccountPicture: Provider.of<CurrentUser>(context)
+                      .user
+                      .profilePicUrl!
+                      .isNotEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 3.0,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 100,
+                        backgroundColor: Colors.black,
+                        backgroundImage: NetworkImage(
+                          Provider.of<CurrentUser>(context).user.profilePicUrl!,
+                        ),
+                      ),
+                    )
+                  : Avatar(
+                      shape: AvatarShape.circle(30),
+                      name: Provider.of<CurrentUser>(context)
+                          .user
+                          .firstName
+                          .toTitleCase(),
+                      placeholderColors: const [
+                          Colors.grey,
+                        ]),
             ),
           ),
           Expanded(
@@ -62,7 +86,7 @@ class _CstmDrawerState extends State<CstmDrawer> {
                   leading: const Icon(Icons.person_4_outlined),
                   title: const Text('Profile'),
                   onTap: () {
-                    redirectFunc(const ProfilePage());
+                    redirectFunc(ProfilePage());
                   },
                 ),
                 const Divider(

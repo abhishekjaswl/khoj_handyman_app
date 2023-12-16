@@ -69,7 +69,6 @@ class _HomePageState extends State<HomePage> {
                   width: MediaQuery.of(context).size.width,
                   child: Card(
                     margin: const EdgeInsets.all(8),
-                    color: Theme.of(context).colorScheme.background,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -96,7 +95,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Card(
                   margin: const EdgeInsets.symmetric(horizontal: 8),
-                  color: Theme.of(context).colorScheme.background,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

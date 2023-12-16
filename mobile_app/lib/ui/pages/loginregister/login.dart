@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mobile_app/ui/pages/home/home.dart';
 
 import '../../../core/services/anime_service.dart';
 import '../../../core/services/auth_service.dart';
@@ -109,9 +108,6 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const HomePage()))),
     );
   }
 }

@@ -28,7 +28,6 @@ class UserService {
               'users/ProfilePic/$id',
         ),
       );
-
       final regBody = {
         'id': id,
         'profilePicUrl': result.secureUrl,
@@ -37,30 +36,27 @@ class UserService {
       try {
         final response = await http.post(
           Uri.parse(uploadProfilePicApi),
+          headers: {'Content-Type': 'application/json'},
           body: jsonEncode(regBody),
         );
 
-        final jsonResponse = jsonDecode(response.body);
-
         if (response.statusCode == 200) {
           // ignore: use_build_context_synchronously
-          Provider.of<CurrentUser>(context, listen: false).updateProfilePicUrl(
-              result
-                  .secureUrl); // update the profile picture URL in the provider's state
+          Provider.of<CurrentUser>(context, listen: false)
+              .updateProfilePicUrl(result.secureUrl);
           Fluttertoast.showToast(
-            msg: jsonResponse['msg'],
+            msg: response.body,
             backgroundColor: Colors.green,
             fontSize: 16,
           );
         } else {
           Fluttertoast.showToast(
-            msg: jsonResponse['error'],
+            msg: response.body,
             backgroundColor: Colors.red,
             fontSize: 16,
           );
         }
       } catch (e) {
-        print(e);
         Fluttertoast.showToast(
           msg: e.toString(),
           backgroundColor: Colors.red,
