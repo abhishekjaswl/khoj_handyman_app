@@ -79,7 +79,7 @@ exports.getRegisOTP = async (req, res, next) => {
 
         const userName = `${firstName} ${lastName}`;
 
-        await AuthService.sendOTP(email, 'registration', userName, res, next);
+        await AuthService.sendOTP(email, 'registration to the app', userName, res, next);
 
     } catch (error) {
         return next(error);
@@ -98,7 +98,7 @@ exports.getResetOTP = async (req, res, next) => {
 
         const userName = `${user.firstName} ${user.lastName}`;
 
-        await AuthService.sendOTP(email, 'reset password', userName);
+        await AuthService.sendOTP(email, 'reset your password', userName);
 
         res.status(200).json('OTP sent.');
 

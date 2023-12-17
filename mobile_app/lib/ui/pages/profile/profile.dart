@@ -63,12 +63,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.secondary,
                           ),
-                          child: Text(
-                            'Gallery',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.image,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              Text(
+                                'Gallery',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         ElevatedButton(
@@ -85,12 +94,21 @@ class _ProfilePageState extends State<ProfilePage> {
                             backgroundColor:
                                 Theme.of(context).colorScheme.secondary,
                           ),
-                          child: Text(
-                            'Camera',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.camera_alt,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              Text(
+                                'Camera',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -98,33 +116,33 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               },
-              child: Provider.of<CurrentUser>(context)
-                      .user
-                      .profilePicUrl!
-                      .isNotEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 3.0,
-                        ),
-                      ),
-                      child: CircleAvatar(
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary,
+                    width: 3.0,
+                  ),
+                ),
+                child: Provider.of<CurrentUser>(context)
+                        .user
+                        .profilePicUrl!
+                        .isNotEmpty
+                    ? CircleAvatar(
                         radius: 100,
                         backgroundColor: Colors.black,
                         backgroundImage: NetworkImage(
                           Provider.of<CurrentUser>(context).user.profilePicUrl!,
                         ),
+                      )
+                    : Avatar(
+                        shape: AvatarShape.circle(100),
+                        name: Provider.of<CurrentUser>(context)
+                            .user
+                            .firstName
+                            .toTitleCase(),
                       ),
-                    )
-                  : Avatar(
-                      shape: AvatarShape.circle(100),
-                      name: Provider.of<CurrentUser>(context)
-                          .user
-                          .firstName
-                          .toTitleCase(),
-                    ),
+              ),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,

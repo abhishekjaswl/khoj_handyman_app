@@ -36,37 +36,40 @@ class _CstmDrawerState extends State<CstmDrawer> {
                 'Welcome Back, ${Provider.of<CurrentUser>(context).user.firstName}',
                 style: const TextStyle(fontSize: 18),
               ),
-              accountEmail: Text(Provider.of<CurrentUser>(context).user.email),
+              accountEmail: Text(
+                Provider.of<CurrentUser>(context).user.email,
+                overflow: TextOverflow.ellipsis,
+              ),
               currentAccountPictureSize: const Size.square(70),
-              currentAccountPicture: Provider.of<CurrentUser>(context)
-                      .user
-                      .profilePicUrl!
-                      .isNotEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 3.0,
-                        ),
-                      ),
-                      child: CircleAvatar(
+              currentAccountPicture: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.white,
+                    width: 3.0,
+                  ),
+                ),
+                child: Provider.of<CurrentUser>(context)
+                        .user
+                        .profilePicUrl!
+                        .isNotEmpty
+                    ? CircleAvatar(
                         radius: 100,
                         backgroundColor: Colors.black,
                         backgroundImage: NetworkImage(
                           Provider.of<CurrentUser>(context).user.profilePicUrl!,
                         ),
-                      ),
-                    )
-                  : Avatar(
-                      shape: AvatarShape.circle(30),
-                      name: Provider.of<CurrentUser>(context)
-                          .user
-                          .firstName
-                          .toTitleCase(),
-                      placeholderColors: const [
-                          Colors.grey,
-                        ]),
+                      )
+                    : Avatar(
+                        shape: AvatarShape.circle(30),
+                        name: Provider.of<CurrentUser>(context)
+                            .user
+                            .firstName
+                            .toTitleCase(),
+                        placeholderColors: const [
+                            Colors.grey,
+                          ]),
+              ),
             ),
           ),
           Expanded(

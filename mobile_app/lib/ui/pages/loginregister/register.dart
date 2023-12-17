@@ -76,7 +76,7 @@ class _RegisterPageState extends State<RegisterPage> {
             context: context,
             email: _emailController.text,
             otp: otp,
-            purpose: 'registration',
+            purpose: 'registration to the app',
           );
           if (verifyResult == 'ok') {
             Fluttertoast.showToast(
@@ -120,13 +120,13 @@ class _RegisterPageState extends State<RegisterPage> {
   void registerUser() async {
     await authService.registerUser(
       context: context,
-      firstName: _firstNameController.text,
-      lastName: _lastNameController.text,
-      dob: _dobController.text,
+      firstName: _firstNameController.text.trim(),
+      lastName: _lastNameController.text.trim(),
+      dob: _dobController.text.trim(),
       role: userType,
-      email: _emailController.text,
-      phone: _phoneController.text,
-      password: _passwordController.text,
+      email: _emailController.text.trim(),
+      phone: _phoneController.text.trim(),
+      password: _passwordController.text.trim(),
     );
   }
 
@@ -286,6 +286,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             fieldStyle: FieldStyle.box,
                             style: const TextStyle(fontSize: 20),
                             onChanged: (pin) {
+                              // do not remove onChanged
                               // print("Changed: " + pin);
                             },
                             onCompleted: (value) {
