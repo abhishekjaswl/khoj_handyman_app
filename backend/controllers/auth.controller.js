@@ -112,7 +112,7 @@ exports.verifyOTP = async (req, res, next) => {
         const email = req.params.email;
         const otp = req.params.otp;
         const purpose = req.params.purpose;
-
+        console.log('ok');
         const verify = await AuthService.checkOTP(email, otp, purpose);
 
         if (!verify) {

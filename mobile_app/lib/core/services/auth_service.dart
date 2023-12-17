@@ -181,11 +181,6 @@ class AuthService {
 
       switch (response.statusCode) {
         case 200:
-          Fluttertoast.showToast(
-            msg: 'OTP verified!',
-            backgroundColor: Colors.green,
-            fontSize: 16,
-          );
           return 'ok';
         case 400:
           return response.body;

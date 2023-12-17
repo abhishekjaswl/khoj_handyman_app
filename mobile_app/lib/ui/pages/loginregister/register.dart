@@ -31,16 +31,25 @@ class _RegisterPageState extends State<RegisterPage> {
   final OtpFieldController _otpController = OtpFieldController();
   String userType = 'user';
 
+  String otp = '';
   int _currentStep = 0;
 
   void _tapped(int step) => setState(() => _currentStep = step);
 
   Future<void> _continued() async {
     switch (_currentStep) {
+      case 0:
+        if (_firstNameController.text.isNotEmpty &&
+            _lastNameController.text.isNotEmpty &&
+            _dobController.text.isNotEmpty) {
+          setState(() => _currentStep++);
+          _registerFormKey.currentState!.reset();
+        } else {
+          _registerFormKey.currentState!.validate();
+        }
       case 2:
         if (_emailController.text.isNotEmpty &&
-            _firstNameController.text.isNotEmpty &&
-            _lastNameController.text.isNotEmpty) {
+            _phoneController.text.isNotEmpty) {
           String otpResult = await authService.getregisOTP(
             context: context,
             email: _emailController.text,
@@ -48,6 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
             lastName: _lastNameController.text,
           );
           if (otpResult == 'ok') {
+            _registerFormKey.currentState!.reset();
             setState(() => _currentStep++);
           } else {
             Fluttertoast.showToast(
@@ -61,8 +71,30 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         break;
       case 3:
-        print('lol');
-
+        if (otp != '') {
+          String verifyResult = await authService.verifyOTP(
+            context: context,
+            email: _emailController.text,
+            otp: otp,
+            purpose: 'registration',
+          );
+          if (verifyResult == 'ok') {
+            Fluttertoast.showToast(
+              msg: 'OTP Verified!',
+              backgroundColor: Colors.red,
+              fontSize: 16,
+            );
+            otp = '';
+            _otpController.clear();
+            setState(() => _currentStep++);
+          } else {
+            Fluttertoast.showToast(
+              msg: verifyResult,
+              backgroundColor: Colors.red,
+              fontSize: 16,
+            );
+          }
+        }
       case < 4:
         setState(() => _currentStep++);
         break;
@@ -82,26 +114,6 @@ class _RegisterPageState extends State<RegisterPage> {
         setState(() => _currentStep--);
       case 0:
         Navigator.pop(context);
-    }
-  }
-
-  void verifyOTP(pin) async {
-    print('fuck you');
-    _otpController.clear;
-    String verifyResult = await authService.verifyOTP(
-      context: context,
-      email: _emailController.text,
-      otp: pin,
-      purpose: 'registration',
-    );
-    if (verifyResult == 'ok') {
-      _continued();
-    } else {
-      Fluttertoast.showToast(
-        msg: verifyResult,
-        backgroundColor: Colors.red,
-        fontSize: 16,
-      );
     }
   }
 
@@ -277,7 +289,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               // print("Changed: " + pin);
                             },
                             onCompleted: (value) {
-                              verifyOTP(value);
+                              setState(() {
+                                otp = value;
+                              });
                             },
                           ),
                           const Padding(
@@ -294,20 +308,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     Step(
                       title: const Text('Create a password'),
-                      content: Column(
-                        children: <Widget>[
-                          CstmTextField(
-                            mainController: _passwordController,
-                            text: 'Password',
-                            inputType: TextInputType.visiblePassword,
-                          ),
-                          CstmTextField(
-                            mainController: _confirmPasswordController,
-                            confirmController: _passwordController,
-                            text: 'Confirm Password',
-                            inputType: TextInputType.visiblePassword,
-                          ),
-                        ],
+                      content: Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Column(
+                          children: <Widget>[
+                            CstmTextField(
+                              mainController: _passwordController,
+                              text: 'Password',
+                              inputType: TextInputType.visiblePassword,
+                            ),
+                            CstmTextField(
+                              mainController: _confirmPasswordController,
+                              confirmController: _passwordController,
+                              text: 'Confirm Password',
+                              inputType: TextInputType.visiblePassword,
+                            ),
+                          ],
+                        ),
                       ),
                       isActive: _currentStep >= 0,
                       state: _currentStep >= 5
