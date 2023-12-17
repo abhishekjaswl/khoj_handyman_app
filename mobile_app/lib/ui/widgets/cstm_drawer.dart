@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/profile/profile.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,7 @@ import 'package:avatars/avatars.dart';
 
 import '../../core/providers/currentuser_provider.dart';
 import '../../core/services/auth_service.dart';
-import 'cstm_button.dart';
+import '../themes/light_theme.dart';
 
 class CstmDrawer extends StatefulWidget {
   const CstmDrawer({super.key});
@@ -40,35 +41,32 @@ class _CstmDrawerState extends State<CstmDrawer> {
                 Provider.of<CurrentUser>(context).user.email,
                 overflow: TextOverflow.ellipsis,
               ),
-              currentAccountPictureSize: const Size.square(70),
-              currentAccountPicture: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 3.0,
-                  ),
+              currentAccountPicture: Avatar(
+                sources: [
+                  NetworkSource(
+                      Provider.of<CurrentUser>(context).user.profilePicUrl!)
+                ],
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
                 ),
-                child: Provider.of<CurrentUser>(context)
-                        .user
-                        .profilePicUrl!
-                        .isNotEmpty
-                    ? CircleAvatar(
-                        radius: 100,
-                        backgroundColor: Colors.black,
-                        backgroundImage: NetworkImage(
-                          Provider.of<CurrentUser>(context).user.profilePicUrl!,
-                        ),
-                      )
-                    : Avatar(
-                        shape: AvatarShape.circle(30),
-                        name: Provider.of<CurrentUser>(context)
-                            .user
-                            .firstName
-                            .toTitleCase(),
-                        placeholderColors: const [
-                            Colors.grey,
-                          ]),
+                shape: AvatarShape.circle(50),
+                placeholderColors: const [
+                  Colors.blueGrey,
+                  Colors.lime,
+                  Colors.cyan,
+                  Colors.deepOrange,
+                  Colors.green,
+                  Colors.indigo,
+                  Colors.orangeAccent,
+                  Colors.red,
+                  Colors.teal,
+                  Colors.yellow,
+                ],
+                name: Provider.of<CurrentUser>(context)
+                    .user
+                    .firstName
+                    .toTitleCase(),
               ),
             ),
           ),
@@ -77,14 +75,6 @@ class _CstmDrawerState extends State<CstmDrawer> {
               physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
               children: [
-                ListTile(
-                  leading: const Icon(Icons.home_outlined),
-                  title: const Text('Home'),
-                  onTap: () {},
-                ),
-                const Divider(
-                  height: 0,
-                ),
                 ListTile(
                   leading: const Icon(Icons.person_4_outlined),
                   title: const Text('Profile'),
@@ -96,16 +86,24 @@ class _CstmDrawerState extends State<CstmDrawer> {
                   height: 0,
                 ),
                 ListTile(
-                  leading: const Icon(Icons.home_outlined),
-                  title: const Text('Home'),
+                  leading: const Icon(Icons.abc),
+                  title: const Text('Unknown'),
                   onTap: () {},
                 ),
                 const Divider(
                   height: 0,
                 ),
                 ListTile(
-                  leading: const Icon(Icons.home_outlined),
-                  title: const Text('Home'),
+                  leading: const Icon(Icons.abc),
+                  title: const Text('Unknown'),
+                  onTap: () {},
+                ),
+                const Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  leading: const Icon(Icons.abc),
+                  title: const Text('Unknown'),
                   onTap: () {},
                 ),
                 const Divider(
@@ -114,23 +112,48 @@ class _CstmDrawerState extends State<CstmDrawer> {
               ],
             ),
           ),
-          Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: CstmButton(
-                  leadingIcon: const Icon(Icons.logout_outlined),
-                  text: 'Logout',
-                  textColor: Colors.white,
-                  btnColor: Colors.red,
-                  onPressed: () => {
-                    Navigator.pop(context),
-                    authService.logoutUser(
-                      context: context,
-                    )
-                  },
-                ),
-              )),
+          Divider(
+            height: 0,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 30),
+            trailing: Icon(
+                Provider.of<ThemeProvider>(context).themeData == lightTheme
+                    ? Icons.light_mode_outlined
+                    : Icons.dark_mode_outlined),
+            title: Text(
+                Provider.of<ThemeProvider>(context).themeData == lightTheme
+                    ? 'Dark Mode'
+                    : 'Light Mode'),
+            onTap: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            },
+          ),
+          Divider(
+            height: 0,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          ListTile(
+            textColor: Colors.red,
+            iconColor: Colors.red,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 30),
+            trailing: const Icon(Icons.logout_outlined),
+            title: const Text('Logout'),
+            onTap: () => {
+              Navigator.pop(context),
+              authService.logoutUser(
+                context: context,
+              )
+            },
+          ),
+          Divider(
+            height: 0,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(
+            height: 5,
+          ),
         ],
       ),
     );

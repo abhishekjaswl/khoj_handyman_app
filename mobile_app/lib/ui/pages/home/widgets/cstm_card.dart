@@ -14,40 +14,45 @@ class CstmCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(10),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(0),
         child: Row(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Theme.of(context).colorScheme.primary,
-                  width: 3.0,
+            Avatar(
+              sources: [NetworkSource(user.profilePicUrl!)],
+              shape: AvatarShape.rectangle(
+                80,
+                80,
+                const BorderRadius.all(
+                  Radius.circular(5),
                 ),
               ),
-              child: user.profilePicUrl!.isNotEmpty
-                  ? CircleAvatar(
-                      radius: 100,
-                      backgroundColor: Colors.black,
-                      backgroundImage: NetworkImage(
-                        user.profilePicUrl!,
-                      ),
-                    )
-                  : Avatar(
-                      shape: AvatarShape.circle(30),
-                      name: user.firstName.toTitleCase(),
-                    ),
+              placeholderColors: const [
+                Colors.blueGrey,
+                Colors.amber,
+                Colors.lime,
+                Colors.cyan,
+                Colors.deepOrange,
+                Colors.green,
+                Colors.indigo,
+                Colors.orangeAccent,
+                Colors.red,
+                Colors.teal,
+                Colors.yellow,
+              ],
+              name: user.firstName.toTitleCase(),
             ),
             const SizedBox(
               width: 20,
             ),
             Column(
               children: [
-                Text(user.id),
-                Text(user.firstName),
-                Text(user.lastName),
+                Text(
+                  '${user.firstName} ${user.lastName}',
+                  style: const TextStyle(fontSize: 16),
+                ),
+                Text(user.email),
               ],
             ),
           ],

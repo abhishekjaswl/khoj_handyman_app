@@ -34,6 +34,7 @@ class _CstmAppBarState extends State<CstmAppBar> {
         ),
       ),
       onStretchTrigger: widget.stretchTrigger,
+      stretchTriggerOffset: 100,
       collapsedHeight: 80,
       floating: true,
       pinned: true,

@@ -195,6 +195,7 @@ class AuthService {
   Future<void> logoutUser({
     required BuildContext context,
   }) async {
+    context.read<CurrentUser>().logoutUser();
     // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));

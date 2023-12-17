@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/profile/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -7,11 +8,14 @@ import 'core/providers/loading_provider.dart';
 import 'ui/pages/home/home.dart';
 import 'ui/pages/loginregister/login.dart';
 import 'ui/pages/loginregister/register.dart';
-import 'ui/themes/dark_theme.dart';
-import 'ui/themes/light_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (BuildContext context) => ThemeProvider(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,8 +36,7 @@ class MyApp extends StatelessWidget {
       child: SafeArea(
         child: MaterialApp(
           title: 'Khoj',
-          theme: lightTheme,
-          darkTheme: darkTheme,
+          theme: Provider.of<ThemeProvider>(context).themeData,
           debugShowCheckedModeBanner: false,
           initialRoute: '/login',
           routes: {

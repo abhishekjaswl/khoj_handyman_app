@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
                                                 .primary,
                                           ),
                                           child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(10),
                                             child: Icon(
                                               category.icon,
                                               size: 40,

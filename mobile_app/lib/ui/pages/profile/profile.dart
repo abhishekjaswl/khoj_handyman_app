@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/providers/currentuser_provider.dart';
 import '../../../core/services/user_service.dart';
+import '../../widgets/cstm_msgborder.dart';
 
 class ProfilePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -36,7 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
         padding: const EdgeInsets.only(top: 20),
         child: Column(
           children: [
-            GestureDetector(
+            Avatar(
               onTap: () {
                 showDialog(
                   context: context,
@@ -116,33 +117,31 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.primary,
-                    width: 3.0,
-                  ),
-                ),
-                child: Provider.of<CurrentUser>(context)
-                        .user
-                        .profilePicUrl!
-                        .isNotEmpty
-                    ? CircleAvatar(
-                        radius: 100,
-                        backgroundColor: Colors.black,
-                        backgroundImage: NetworkImage(
-                          Provider.of<CurrentUser>(context).user.profilePicUrl!,
-                        ),
-                      )
-                    : Avatar(
-                        shape: AvatarShape.circle(100),
-                        name: Provider.of<CurrentUser>(context)
-                            .user
-                            .firstName
-                            .toTitleCase(),
-                      ),
+              sources: [
+                NetworkSource(
+                    Provider.of<CurrentUser>(context).user.profilePicUrl!)
+              ],
+              border: Border.all(
+                color: Theme.of(context).colorScheme.primary,
+                width: 3,
               ),
+              shape: AvatarShape.circle(100),
+              placeholderColors: const [
+                Colors.blueGrey,
+                Colors.lime,
+                Colors.cyan,
+                Colors.deepOrange,
+                Colors.green,
+                Colors.indigo,
+                Colors.orangeAccent,
+                Colors.red,
+                Colors.teal,
+                Colors.yellow,
+              ],
+              name: Provider.of<CurrentUser>(context)
+                  .user
+                  .firstName
+                  .toTitleCase(),
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -187,59 +186,70 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
             ),
+            Provider.of<CurrentUser>(context).user.status == 'unverified'
+                ? Transform.translate(
+                    offset: const Offset(0, -15),
+                    child: Container(
+                      decoration: ShapeDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        shape: MessageBorder(),
+                      ),
+                      margin: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width / 1.6,
+                            child: const Text(
+                              'You are not verified. Please fill up the KYC to be verified.',
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                          ElevatedButton(
+                            child: const Text('KYC Form'),
+                            onPressed: () => {},
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Card(
-                margin: const EdgeInsets.all(8),
+                margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
                 child: Padding(
                   padding: const EdgeInsets.all(15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Role',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        Provider.of<CurrentUser>(context)
+                      UserInfoItem(
+                        icon: Icons.person_4_outlined,
+                        label: 'Role',
+                        value: Provider.of<CurrentUser>(context)
                             .user
                             .role
                             .toTitleCase(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      const Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        Provider.of<CurrentUser>(context).user.phone.toString(),
-                        style: const TextStyle(fontSize: 14),
+                      UserInfoItem(
+                        icon: Icons.phone_iphone,
+                        label: 'Phone Number',
+                        value: Provider.of<CurrentUser>(context)
+                            .user
+                            .phone
+                            .toString(),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
-                      const Text(
-                        'Date of Birth',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      UserInfoItem(
+                        icon: Icons.calendar_month_outlined,
+                        label: 'Date of Birth',
+                        value: Provider.of<CurrentUser>(context).user.dob,
                       ),
-                      Text(
-                        Provider.of<CurrentUser>(context).user.dob,
-                        style: const TextStyle(fontSize: 14),
-                      )
                     ],
                   ),
                 ),
@@ -247,43 +257,26 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: Card(
-                margin: const EdgeInsets.all(8),
+              child: const Card(
+                margin: EdgeInsets.only(right: 10, left: 10, bottom: 5),
                 child: Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: EdgeInsets.all(15),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Role',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      UserInfoItem(
+                        icon: Icons.place_outlined,
+                        label: 'Address',
+                        value: 'Coming Soon...',
                       ),
-                      Text(
-                        Provider.of<CurrentUser>(context)
-                            .user
-                            .role
-                            .toTitleCase(),
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(
+                      SizedBox(
                         height: 10,
                       ),
-                      const Text(
-                        'Phone Number',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                        ),
+                      UserInfoItem(
+                        icon: Icons.abc,
+                        label: 'Unknown',
+                        value: 'Coming Soon...',
                       ),
-                      Text(
-                        Provider.of<CurrentUser>(context).user.phone.toString(),
-                        style: const TextStyle(fontSize: 14),
-                      )
                     ],
                   ),
                 ),
@@ -297,6 +290,50 @@ class _ProfilePageState extends State<ProfilePage> {
         label: const Text('Edit Profile'),
         icon: const Icon(Icons.edit_document),
       ),
+    );
+  }
+}
+
+class UserInfoItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const UserInfoItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon),
+        const SizedBox(
+          width: 20,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 14,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

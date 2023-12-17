@@ -1,7 +1,7 @@
+require('dotenv').config();
 const UserModel = require('../models/user.model');
 var nodemailer = require('nodemailer');
 const otpGenerator = require('otp-generator');
-var Mailgen = require('mailgen');
 const otpModel = require('../models/otp.model');
 
 class AuthService {
@@ -237,8 +237,8 @@ class AuthService {
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'bookabahun@gmail.com',
-                    pass: 'zbeqsldckwqccfsd'
+                    user: process.env.EMAIL,
+                    pass: process.env.GOOGLE_KEY
                 }
             });
 
@@ -253,7 +253,7 @@ class AuthService {
                 .then(() => {
 
                     var mailOptions = {
-                        from: 'bookabahun@gmail.com',
+                        from: process.env.EMAIL,
                         to: email,
                         subject: `Verify your ${purpose}.`,
                         html: emailBody,

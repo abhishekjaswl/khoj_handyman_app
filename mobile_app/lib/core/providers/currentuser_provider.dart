@@ -16,4 +16,8 @@ class CurrentUser extends ChangeNotifier {
     _currentUser.profilePicUrl = newProfilePicUrl;
     notifyListeners();
   }
+
+  void logoutUser() {
+    _currentUser = User('', '', '', '', 0, '', '', '', '');
+  }
 }
