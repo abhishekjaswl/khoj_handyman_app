@@ -25,7 +25,8 @@ class CstmLoginSwitcher extends StatelessWidget {
           onPressed: onpressed,
           child: Text(
             suffText,
-            style: const TextStyle(
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.tertiary,
               fontWeight: FontWeight.bold,
               decoration: TextDecoration.underline,
             ),

@@ -51,10 +51,15 @@ class _CstmTextFieldState extends State<CstmTextField> {
         controller: widget.mainController,
         obscureText: _isPassword,
         keyboardType: widget.inputType,
+        textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           labelText: widget.text,
           labelStyle: const TextStyle(fontSize: 15),
           filled: true,
+          focusColor: Theme.of(context).colorScheme.tertiary,
+          focusedBorder: OutlineInputBorder(
+              borderSide:
+                  BorderSide(color: Theme.of(context).colorScheme.tertiary)),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),

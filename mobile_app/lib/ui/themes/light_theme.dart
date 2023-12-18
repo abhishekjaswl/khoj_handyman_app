@@ -4,6 +4,11 @@ ThemeData lightTheme = ThemeData(
   fontFamily: 'Comfortaa',
   brightness: Brightness.light,
   scaffoldBackgroundColor: Colors.white,
+  dividerColor: Colors.teal,
+  datePickerTheme: const DatePickerThemeData(
+      headerBackgroundColor: Colors.teal,
+      dayOverlayColor: MaterialStatePropertyAll(Colors.teal)),
+  progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.teal),
   drawerTheme: DrawerThemeData(backgroundColor: Colors.grey[300]!),
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.white,
@@ -18,5 +23,6 @@ ThemeData lightTheme = ThemeData(
     background: Colors.grey[300]!,
     primary: Colors.black,
     secondary: Colors.grey[200]!,
+    tertiary: Colors.teal,
   ),
 );

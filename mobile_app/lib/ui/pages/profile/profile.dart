@@ -38,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           children: [
             Avatar(
+              margin: const EdgeInsets.only(bottom: 10),
               onTap: () {
                 showDialog(
                   context: context,
@@ -132,7 +133,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 Colors.cyan,
                 Colors.deepOrange,
                 Colors.green,
-                Colors.indigo,
                 Colors.orangeAccent,
                 Colors.red,
                 Colors.teal,
@@ -167,14 +167,20 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Text(
                             Provider.of<CurrentUser>(context).user.email,
-                            style: const TextStyle(fontSize: 14),
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).colorScheme.secondary),
                           )
                         ],
                       ),
                       Container(
                         padding: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
+                            color:
+                                Provider.of<CurrentUser>(context).user.status ==
+                                        'verified'
+                                    ? Theme.of(context).colorScheme.tertiary
+                                    : Theme.of(context).colorScheme.secondary,
                             borderRadius: BorderRadius.circular(5)),
                         child: Text(
                           Provider.of<CurrentUser>(context).user.status,
@@ -191,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     offset: const Offset(0, -15),
                     child: Container(
                       decoration: ShapeDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.tertiary,
                         shape: MessageBorder(),
                       ),
                       margin: const EdgeInsets.symmetric(horizontal: 15),
@@ -207,7 +213,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           ElevatedButton(
                             child: const Text('KYC Form'),
-                            onPressed: () => {},
+                            onPressed: () => {
+                              Navigator.pushReplacementNamed(context, '/kyc')
+                            },
                           )
                         ],
                       ),

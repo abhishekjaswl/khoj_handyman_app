@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -44,30 +43,23 @@ class UserService {
           // ignore: use_build_context_synchronously
           Provider.of<CurrentUser>(context, listen: false)
               .updateProfilePicUrl(result.secureUrl);
-          Fluttertoast.showToast(
-            msg: response.body,
-            backgroundColor: Colors.green,
-            fontSize: 16,
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response.body)),
           );
         } else {
-          Fluttertoast.showToast(
-            msg: response.body,
-            backgroundColor: Colors.red,
-            fontSize: 16,
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(response.body)),
           );
         }
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: e.toString(),
-          backgroundColor: Colors.red,
-          fontSize: 16,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
         );
       }
     } else {
-      Fluttertoast.showToast(
-        msg: 'Error uploading image to Cloudinary',
-        backgroundColor: Colors.red,
-        fontSize: 16,
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error uploading image to Cloudinary')),
       );
     }
   }

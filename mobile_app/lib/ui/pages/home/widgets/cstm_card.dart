@@ -35,7 +35,6 @@ class CstmCard extends StatelessWidget {
                 Colors.cyan,
                 Colors.deepOrange,
                 Colors.green,
-                Colors.indigo,
                 Colors.orangeAccent,
                 Colors.red,
                 Colors.teal,

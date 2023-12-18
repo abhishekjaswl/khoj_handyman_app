@@ -20,6 +20,9 @@ class CstmDatePicker extends StatelessWidget {
         labelText: "Date of Birth",
         labelStyle: const TextStyle(fontSize: 15),
         filled: true,
+        focusedBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Theme.of(context).colorScheme.tertiary)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -36,11 +39,9 @@ class CstmDatePicker extends StatelessWidget {
             lastDate: DateTime(2015));
 
         if (pickedDate != null) {
-          print(
-              pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+          //pickedDate output format => 2021-03-10 00:00:00.000
           String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-          print(
-              formattedDate); //formatted date output using intl package =>  2021-03-16
+          //formatted date output using intl package =>  2021-03-16
           onDateSelected!(formattedDate);
         } else {}
       },

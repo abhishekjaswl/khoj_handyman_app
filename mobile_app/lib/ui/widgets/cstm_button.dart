@@ -23,7 +23,7 @@ class CstmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          backgroundColor: btnColor,
+          backgroundColor: btnColor ?? Theme.of(context).colorScheme.tertiary,
           padding: const EdgeInsets.symmetric(
             vertical: 15,
           )),
@@ -38,7 +38,7 @@ class CstmButton extends StatelessWidget {
             Text(
               text,
               style: TextStyle(
-                color: textColor,
+                color: textColor ?? Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -49,6 +49,7 @@ class CstmButton extends StatelessWidget {
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
+                      color: Colors.white,
                     ),
                   )
                 : leadingIcon ?? const SizedBox(),

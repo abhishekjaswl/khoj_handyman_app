@@ -15,12 +15,20 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _loginFormKey = GlobalKey<FormState>();
+  late final AnimationController _controller;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService authService = AuthService();
   final AnimeService animeService = AnimeService();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(vsync: this);
+  }
 
   void loginUser() async {
     await authService.loginUser(
@@ -34,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -54,9 +63,9 @@ class _LoginPageState extends State<LoginPage> {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            Lottie.network(
-              'https://lottie.host/e59aa853-94fe-4896-924c-d461cdb1fcc9/c4xuZAPMmJ.json',
-              width: double.infinity,
+            Lottie.asset(
+              'assets/lottie/login_hello.json',
+              width: MediaQuery.of(context).size.width,
               height: 200,
               reverse: true,
             ),
@@ -75,7 +84,10 @@ class _LoginPageState extends State<LoginPage> {
                     inputType: TextInputType.visiblePassword,
                   ),
                   CstmButton(
-                    leadingIcon: const Icon(Icons.login_outlined),
+                    leadingIcon: const Icon(
+                      Icons.login_outlined,
+                      color: Colors.white,
+                    ),
                     text: 'Log In',
                     onPressed: () => {
                       if (_loginFormKey.currentState!.validate()) {loginUser()}

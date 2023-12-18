@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/providers/theme_provider.dart';
+import 'package:mobile_app/ui/pages/kycForm/kyc.dart';
 import 'package:mobile_app/ui/pages/profile/profile.dart';
 import 'package:provider/provider.dart';
 
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
             '/register': (context) => const RegisterPage(),
             '/home': (context) => const HomePage(),
             '/profile': (context) => ProfilePage(),
+            '/kyc': (context) => const KYCPage(),
           },
         ),
       ),

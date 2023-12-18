@@ -1,8 +1,9 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -33,36 +34,28 @@ class AuthService {
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        Fluttertoast.showToast(
-          msg: "Logging in",
-          backgroundColor: Colors.green,
-          fontSize: 16,
-        );
+
         User userInfo = User.fromJson(jsonResponse["user"]);
-        // ignore: use_build_context_synchronously
         context.read<CurrentUser>().setUser(userInfo);
 
-        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Welcome Back ${userInfo.firstName}!')),
+        );
+
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        Fluttertoast.showToast(
-          msg: response.body,
-          backgroundColor: Colors.red,
-          fontSize: 16,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.body)),
         );
       }
     } on TimeoutException catch (_) {
       // Handle timeout
-      Fluttertoast.showToast(
-        msg: "Took too long to respond.",
-        backgroundColor: Colors.red,
-        fontSize: 16,
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Took too long to respond.')),
       );
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: e.toString(),
-        backgroundColor: Colors.red,
-        fontSize: 16,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
       );
     } finally {
       context.read<IsLoadingData>().setIsLoading(false);
@@ -99,37 +92,28 @@ class AuthService {
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        Fluttertoast.showToast(
-          msg: "Registration Complete!",
-          backgroundColor: Colors.green,
-          fontSize: 16,
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Registration Complete!')),
         );
+
         User userInfo = User.fromJson(jsonResponse["user"]);
 
-        // ignore: use_build_context_synchronously
         context.read<CurrentUser>().setUser(userInfo);
 
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacementNamed(context, '/home');
       } else {
-        Fluttertoast.showToast(
-          msg: response.body,
-          backgroundColor: Colors.red,
-          fontSize: 16,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.body)),
         );
       }
     } on TimeoutException catch (_) {
       // Handle timeout
-      Fluttertoast.showToast(
-        msg: "Took too long to respond.",
-        backgroundColor: Colors.red,
-        fontSize: 16,
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Took too long to respond.')),
       );
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: e.toString(),
-        backgroundColor: Colors.red,
-        fontSize: 16,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
       );
     } finally {
       context.read<IsLoadingData>().setIsLoading(false);
@@ -196,7 +180,6 @@ class AuthService {
     required BuildContext context,
   }) async {
     context.read<CurrentUser>().logoutUser();
-    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }

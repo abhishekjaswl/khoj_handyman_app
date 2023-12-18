@@ -1,5 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mobile_app/ui/widgets/cstm_datepicker.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
@@ -60,10 +61,8 @@ class _RegisterPageState extends State<RegisterPage> {
             _registerFormKey.currentState!.reset();
             setState(() => _currentStep++);
           } else {
-            Fluttertoast.showToast(
-              msg: otpResult,
-              backgroundColor: Colors.red,
-              fontSize: 16,
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(otpResult)),
             );
           }
         } else {
@@ -79,19 +78,16 @@ class _RegisterPageState extends State<RegisterPage> {
             purpose: 'registration to the app',
           );
           if (verifyResult == 'ok') {
-            Fluttertoast.showToast(
-              msg: 'OTP Verified!',
-              backgroundColor: Colors.red,
-              fontSize: 16,
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('OTP Verified!')),
             );
+
             otp = '';
             _otpController.clear();
             setState(() => _currentStep++);
           } else {
-            Fluttertoast.showToast(
-              msg: verifyResult,
-              backgroundColor: Colors.red,
-              fontSize: 16,
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(verifyResult)),
             );
           }
         }
@@ -207,7 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       content: Column(
                         children: <Widget>[
                           RadioListTile(
-                            activeColor: Theme.of(context).colorScheme.primary,
+                            activeColor: Theme.of(context).colorScheme.tertiary,
                             title: const Text('User'),
                             value: 'user',
                             groupValue: userType,
@@ -218,7 +214,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             },
                           ),
                           RadioListTile(
-                            activeColor: Theme.of(context).colorScheme.primary,
+                            activeColor: Theme.of(context).colorScheme.tertiary,
                             title: const Text('Worker'),
                             value: 'worker',
                             groupValue: userType,

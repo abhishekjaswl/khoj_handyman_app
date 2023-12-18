@@ -46,6 +46,7 @@ dependencies:
   cloudinary_public: ^0.23.1
   intl: ^0.19.0
   bubble: ^1.2.1
+  dotted_border: ^2.1.0
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,7 @@ flutter:
   assets:
     - assets/fonts/
     - assets/images/
+    - assets/lottie/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

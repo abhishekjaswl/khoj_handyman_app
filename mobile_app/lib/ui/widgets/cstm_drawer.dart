@@ -57,7 +57,6 @@ class _CstmDrawerState extends State<CstmDrawer> {
                   Colors.cyan,
                   Colors.deepOrange,
                   Colors.green,
-                  Colors.indigo,
                   Colors.orangeAccent,
                   Colors.red,
                   Colors.teal,
@@ -112,9 +111,8 @@ class _CstmDrawerState extends State<CstmDrawer> {
               ],
             ),
           ),
-          Divider(
+          const Divider(
             height: 0,
-            color: Theme.of(context).colorScheme.primary,
           ),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 30),
@@ -130,9 +128,8 @@ class _CstmDrawerState extends State<CstmDrawer> {
               Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
             },
           ),
-          Divider(
+          const Divider(
             height: 0,
-            color: Theme.of(context).colorScheme.primary,
           ),
           ListTile(
             textColor: Colors.red,
@@ -147,9 +144,8 @@ class _CstmDrawerState extends State<CstmDrawer> {
               )
             },
           ),
-          Divider(
+          const Divider(
             height: 0,
-            color: Theme.of(context).colorScheme.primary,
           ),
           const SizedBox(
             height: 5,
