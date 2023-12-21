@@ -8,6 +8,7 @@ class User {
   String role;
   String status;
   String? profilePicUrl;
+  String? citizenshipUrl;
 
   User(
     this.id,
@@ -19,6 +20,7 @@ class User {
     this.role,
     this.status,
     this.profilePicUrl,
+    this.citizenshipUrl,
   );
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class User {
       (json['role']),
       (json['status']),
       (json['profilePicUrl']),
+      (json['citizenshipUrl']),
     );
   }
 
@@ -45,5 +48,6 @@ class User {
         'role': role,
         'status': status,
         'profilePicUrl': profilePicUrl,
+        'citizenshipUrl': citizenshipUrl,
       };
 }

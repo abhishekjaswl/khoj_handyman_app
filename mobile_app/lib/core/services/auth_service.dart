@@ -5,6 +5,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/ui/widgets/cstm_snackbar.dart';
+import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../../ui/pages/loginregister/login.dart';
@@ -39,23 +41,35 @@ class AuthService {
         context.read<CurrentUser>().setUser(userInfo);
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Welcome Back ${userInfo.firstName}!')),
+          CstmSnackBar(
+            text: 'Welcome Back ${userInfo.firstName.toTitleCase()}!',
+            type: 'success',
+          ),
         );
 
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.body)),
+          CstmSnackBar(
+            text: response.body,
+            type: 'error',
+          ),
         );
       }
     } on TimeoutException catch (_) {
       // Handle timeout
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Took too long to respond.')),
+        CstmSnackBar(
+          text: 'Took too long to respond.',
+          type: 'error',
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        CstmSnackBar(
+          text: e.toString(),
+          type: 'error',
+        ),
       );
     } finally {
       context.read<IsLoadingData>().setIsLoading(false);
@@ -93,7 +107,10 @@ class AuthService {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration Complete!')),
+          CstmSnackBar(
+            text: 'Registration Complete!',
+            type: 'success',
+          ),
         );
 
         User userInfo = User.fromJson(jsonResponse["user"]);
@@ -103,17 +120,26 @@ class AuthService {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.body)),
+          CstmSnackBar(
+            text: response.body,
+            type: 'error',
+          ),
         );
       }
     } on TimeoutException catch (_) {
       // Handle timeout
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Took too long to respond.')),
+        CstmSnackBar(
+          text: 'Took too long to respond.',
+          type: 'error',
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
+        CstmSnackBar(
+          text: e.toString(),
+          type: 'error',
+        ),
       );
     } finally {
       context.read<IsLoadingData>().setIsLoading(false);
@@ -180,6 +206,12 @@ class AuthService {
     required BuildContext context,
   }) async {
     context.read<CurrentUser>().logoutUser();
+    ScaffoldMessenger.of(context).showSnackBar(
+      CstmSnackBar(
+        text: 'Logged Out.',
+        type: 'error',
+      ),
+    );
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => const LoginPage()));
   }

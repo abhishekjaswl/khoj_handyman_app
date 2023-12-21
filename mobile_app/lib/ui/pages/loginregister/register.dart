@@ -7,6 +7,7 @@ import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
 
 import '../../../core/services/auth_service.dart';
+import '../../widgets/cstm_snackbar.dart';
 import '../../widgets/cstm_textfield.dart';
 import 'widgets/cstm_loginswitcher.dart';
 
@@ -79,7 +80,10 @@ class _RegisterPageState extends State<RegisterPage> {
           );
           if (verifyResult == 'ok') {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('OTP Verified!')),
+              CstmSnackBar(
+                text: 'OTP Verified!',
+                type: 'success',
+              ),
             );
 
             otp = '';
@@ -87,7 +91,10 @@ class _RegisterPageState extends State<RegisterPage> {
             setState(() => _currentStep++);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(verifyResult)),
+              CstmSnackBar(
+                text: verifyResult,
+                type: 'error',
+              ),
             );
           }
         }

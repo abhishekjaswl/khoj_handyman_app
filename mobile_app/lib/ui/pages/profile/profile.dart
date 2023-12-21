@@ -1,35 +1,25 @@
 import 'package:avatars/avatars.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/currentuser_provider.dart';
-import '../../../core/services/user_service.dart';
+import '../../../core/services/uploadimage_service.dart';
 import '../../widgets/cstm_msgborder.dart';
 
 class ProfilePage extends StatefulWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  ProfilePage({super.key});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final UserService userService = UserService();
-  Future<void> _pickImage(ImageSource source, context, id) async {
-    await userService.uploadProfilePic(
-      source: source,
-      context: context,
-      id: id,
-    );
-  }
+  final UploadImageService uploadImageService = UploadImageService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: widget._scaffoldKey,
       appBar: AppBar(
         title: const Text('Profile'),
       ),
@@ -39,83 +29,10 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Avatar(
               margin: const EdgeInsets.only(bottom: 10),
-              onTap: () {
-                showDialog(
+              onTap: () async {
+                await uploadImageService.showImageSourceDialog(
                   context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text(
-                      'Select image from',
-                      textAlign: TextAlign.center,
-                    ),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            _pickImage(
-                                ImageSource.gallery,
-                                widget._scaffoldKey.currentContext,
-                                Provider.of<CurrentUser>(context, listen: false)
-                                    .user
-                                    .id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.image,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              Text(
-                                'Gallery',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            _pickImage(
-                                ImageSource.camera,
-                                widget._scaffoldKey.currentContext,
-                                Provider.of<CurrentUser>(context, listen: false)
-                                    .user
-                                    .id);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.camera_alt,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              Text(
-                                'Camera',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  purpose: 'ProfilePic',
                 );
               },
               sources: [
@@ -167,9 +84,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           Text(
                             Provider.of<CurrentUser>(context).user.email,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(context).colorScheme.secondary),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
                           )
                         ],
                       ),
@@ -213,9 +131,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           ElevatedButton(
                             child: const Text('KYC Form'),
-                            onPressed: () => {
-                              Navigator.pushReplacementNamed(context, '/kyc')
-                            },
+                            onPressed: () =>
+                                {Navigator.pushNamed(context, '/kyc')},
                           )
                         ],
                       ),

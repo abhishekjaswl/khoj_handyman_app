@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import '../models/user_model.dart';
 
 class CurrentUser extends ChangeNotifier {
-  User _currentUser = User('', '', '', '', 0, '', '', '', '');
+  User _currentUser = User('', '', '', '', 0, '', '', '', '', '');
 
   User get user => _currentUser;
 
@@ -17,7 +17,12 @@ class CurrentUser extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateCitizenshipUrl(String newCitizenship) {
+    _currentUser.citizenshipUrl = newCitizenship;
+    notifyListeners();
+  }
+
   void logoutUser() {
-    _currentUser = User('', '', '', '', 0, '', '', '', '');
+    _currentUser = User('', '', '', '', 0, '', '', '', '', '');
   }
 }

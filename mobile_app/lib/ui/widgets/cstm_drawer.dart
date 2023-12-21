@@ -40,6 +40,8 @@ class _CstmDrawerState extends State<CstmDrawer> {
               accountEmail: Text(
                 Provider.of<CurrentUser>(context).user.email,
                 overflow: TextOverflow.ellipsis,
+                style:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               currentAccountPicture: Avatar(
                 sources: [

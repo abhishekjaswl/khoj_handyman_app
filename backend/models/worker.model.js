@@ -12,6 +12,10 @@ const workerSchema = new Schema({
         type: String,
         lowercase: true
     },
+    paymentQrUrl: {
+        type: String,
+        default: ''
+    },
     status: {
         type: String,
         enum: ['available', 'unavailable'],
