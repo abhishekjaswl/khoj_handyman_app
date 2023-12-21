@@ -30,8 +30,10 @@ exports.uploadProfilePic = async (req, res, next) => {
         switch (purpose) {
             case 'ProfilePic':
                 await UserModel.findOneAndUpdate({ _id: id }, { profilePicUrl: picUrl }, { new: true, runValidators: true });
+                break;
             case 'Citizenship':
                 await UserModel.findOneAndUpdate({ _id: id }, { citizenshipUrl: picUrl }, { new: true, runValidators: true })
+                break;
             case 'PaymentQr':
                 await WorkerModel.findOneAndUpdate({ _id: id }, { paymentQrUrl: picUrl }, { new: true, runValidators: true })
 

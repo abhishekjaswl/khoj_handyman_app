@@ -49,6 +49,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const CstmDrawer(),
+      drawerEnableOpenDragGesture: true,
+      drawerEdgeDragWidth: 50,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

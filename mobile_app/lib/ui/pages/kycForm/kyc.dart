@@ -40,12 +40,13 @@ class _KYCPageState extends State<KYCPage> {
                 ),
               ],
             ),
-            Expanded(
+            const Expanded(
               child: TabBarView(
                 children: [
                   UploadDocuments(),
-                  const UploadLocation(),
+                  UploadLocation(),
                 ],
+                physics: NeverScrollableScrollPhysics(),
               ),
             ),
           ],

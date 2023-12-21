@@ -9,6 +9,9 @@ class User {
   String status;
   String? profilePicUrl;
   String? citizenshipUrl;
+  double? latitude;
+  double? longitude;
+  String? address;
 
   User(
     this.id,
@@ -21,6 +24,9 @@ class User {
     this.status,
     this.profilePicUrl,
     this.citizenshipUrl,
+    this.latitude,
+    this.longitude,
+    this.address,
   );
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -35,6 +41,9 @@ class User {
       (json['status']),
       (json['profilePicUrl']),
       (json['citizenshipUrl']),
+      (json['latitude']),
+      (json['longitude']),
+      (json['address']),
     );
   }
 
@@ -49,5 +58,8 @@ class User {
         'status': status,
         'profilePicUrl': profilePicUrl,
         'citizenshipUrl': citizenshipUrl,
+        'latitude': latitude,
+        'longitude': longitude,
+        'address': address,
       };
 }
