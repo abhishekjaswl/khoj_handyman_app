@@ -1,65 +1,51 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../utils/config/config.dart';
 import '../providers/currentuser_provider.dart';
 
 class UserService {
-  Future<void> uploadProfilePic(
-      {required ImageSource source, required context, required id}) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
+  Future<void> uploadKYC({
+    required BuildContext context,
+    required String id,
+    required String citizenshipUrl,
+    required String? paymentQrUrl,
+    required String? job,
+    required double latitude,
+    required double longitude,
+    required String address,
+  }) async {
+    final regBody = {
+      'id': id,
+      'citizenshipUrl': citizenshipUrl,
+      'paymentQrUrl': paymentQrUrl!,
+      'job': job!,
+      'latitude': latitude,
+      'longitude': longitude,
+      'address': address,
+    };
 
-    if (pickedFile != null) {
-      final imageFile = File(pickedFile.path);
-      final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
-
-      final result = await cloudinary.uploadFile(
-        CloudinaryFile.fromFile(
-          imageFile.path,
-          folder:
-              // ignore: use_build_context_synchronously
-              'users/ProfilePic/$id',
-        ),
+    try {
+      final response = await http.post(
+        Uri.parse(uploadKYCApi),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(regBody),
       );
-      final regBody = {
-        'id': id,
-        'profilePicUrl': result.secureUrl,
-      };
 
-      try {
-        final response = await http.post(
-          Uri.parse(uploadProfilePicApi),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(regBody),
-        );
-
-        if (response.statusCode == 200) {
-          // ignore: use_build_context_synchronously
-          Provider.of<CurrentUser>(context, listen: false)
-              .updateProfilePicUrl(result.secureUrl);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.body)),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(response.body)),
-          );
-        }
-      } catch (e) {
+      if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
+          SnackBar(content: Text(response.body)),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.body)),
         );
       }
-    } else {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Error uploading image to Cloudinary')),
+        SnackBar(content: Text(e.toString())),
       );
     }
   }

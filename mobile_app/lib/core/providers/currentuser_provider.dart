@@ -22,13 +22,13 @@ class CurrentUser extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setMarkerLocationData(double newLatitude, double newLongitude) {
+  void setAddress(
+    double newLatitude,
+    double newLongitude,
+    String newAddress,
+  ) {
     _currentUser.latitude = newLatitude;
     _currentUser.longitude = newLongitude;
-    notifyListeners();
-  }
-
-  void setAddress(String newAddress) {
     _currentUser.address = newAddress;
     notifyListeners();
   }

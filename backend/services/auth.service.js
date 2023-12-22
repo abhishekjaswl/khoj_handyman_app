@@ -5,9 +5,9 @@ const otpGenerator = require('otp-generator');
 const otpModel = require('../models/otp.model');
 
 class AuthService {
-    static async registerUser(firstName, lastName, dob, role, email, phone, password) {
+    static async registerUser(firstName, lastName, role, email, phone, password) {
         try {
-            const createUser = new UserModel({ firstName, lastName, dob, role, email, phone, password });
+            const createUser = new UserModel({ firstName, lastName, role, email, phone, password });
             return await createUser.save();
 
         } catch (error) {

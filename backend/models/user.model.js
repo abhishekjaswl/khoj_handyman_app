@@ -34,6 +34,11 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    gender: {
+        type: String,
+        lowercase: true,
+        enum: ['male', 'female', 'other'],
+    },
     profilePicUrl: {
         type: String,
         default: ''

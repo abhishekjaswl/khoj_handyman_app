@@ -23,12 +23,11 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: const Text('Profile'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Avatar(
-              margin: const EdgeInsets.only(bottom: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               onTap: () async {
                 await uploadImageService.showImageSourceDialog(
                   context: context,
@@ -60,50 +59,47 @@ class _ProfilePageState extends State<ProfilePage> {
                   .firstName
                   .toTitleCase(),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                margin: const EdgeInsets.all(8),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${Provider.of<CurrentUser>(context).user.firstName.toTitleCase()} ${Provider.of<CurrentUser>(context).user.lastName.toTitleCase()}',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                            ),
+            Card(
+              margin: const EdgeInsets.all(8),
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${Provider.of<CurrentUser>(context).user.firstName.toTitleCase()} ${Provider.of<CurrentUser>(context).user.lastName.toTitleCase()}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
                           ),
-                          Text(
-                            Provider.of<CurrentUser>(context).user.email,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          )
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color:
-                                Provider.of<CurrentUser>(context).user.status ==
-                                        'verified'
-                                    ? Theme.of(context).colorScheme.tertiary
-                                    : Theme.of(context).colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Text(
-                          Provider.of<CurrentUser>(context).user.status,
-                          style: const TextStyle(fontSize: 14),
                         ),
-                      )
-                    ],
-                  ),
+                        Text(
+                          Provider.of<CurrentUser>(context).user.email,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
+                        )
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          color:
+                              Provider.of<CurrentUser>(context).user.status ==
+                                      'verified'
+                                  ? Theme.of(context).colorScheme.tertiary
+                                  : Theme.of(context).colorScheme.secondary,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Text(
+                        Provider.of<CurrentUser>(context).user.status,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -139,71 +135,91 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   )
                 : Container(),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Card(
-                margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserInfoItem(
-                        icon: Icons.person_4_outlined,
-                        label: 'Role',
-                        value: Provider.of<CurrentUser>(context)
-                            .user
-                            .role
-                            .toTitleCase(),
+            Card(
+              margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const UserInfoItem(
+                      icon: Icons.work_outline,
+                      label: 'Job',
+                      value: 'Coming Soon...',
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showModalBottomSheet<void>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              height: 200,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Text('Modal BottomSheet'),
+                                    ElevatedButton(
+                                      child: const Text('Close BottomSheet'),
+                                      onPressed: () => Navigator.pop(context),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      child: const UserInfoItem(
+                        icon: Icons.circle_outlined,
+                        label: 'Status',
+                        value: 'Coming Soon...',
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      UserInfoItem(
-                        icon: Icons.phone_iphone,
-                        label: 'Phone Number',
-                        value: Provider.of<CurrentUser>(context)
-                            .user
-                            .phone
-                            .toString(),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      UserInfoItem(
-                        icon: Icons.calendar_month_outlined,
-                        label: 'Date of Birth',
-                        value: Provider.of<CurrentUser>(context).user.dob,
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: const Card(
-                margin: EdgeInsets.only(right: 10, left: 10, bottom: 5),
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserInfoItem(
-                        icon: Icons.place_outlined,
-                        label: 'Address',
-                        value: 'Coming Soon...',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      UserInfoItem(
-                        icon: Icons.abc,
-                        label: 'Unknown',
-                        value: 'Coming Soon...',
-                      ),
-                    ],
-                  ),
+            Card(
+              margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
+              child: Padding(
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    UserInfoItem(
+                      icon: Icons.person_4_outlined,
+                      label: 'Role',
+                      value: Provider.of<CurrentUser>(context)
+                          .user
+                          .role
+                          .toTitleCase(),
+                    ),
+                    UserInfoItem(
+                      icon: Icons.phone_iphone,
+                      label: 'Phone Number',
+                      value: Provider.of<CurrentUser>(context)
+                          .user
+                          .phone
+                          .toString(),
+                    ),
+                    UserInfoItem(
+                      icon: Icons.calendar_month_outlined,
+                      label: 'Date of Birth',
+                      value: Provider.of<CurrentUser>(context).user.dob,
+                    ),
+                    const UserInfoItem(
+                      icon: Icons.male,
+                      label: 'Gender',
+                      value: 'Coming Soon...',
+                    ),
+                    const UserInfoItem(
+                      icon: Icons.place_outlined,
+                      label: 'Address',
+                      value: 'Coming Soon...',
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -233,31 +249,13 @@ class UserInfoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon),
-        const SizedBox(
-          width: 20,
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ],
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(
+        label,
+      ),
+      subtitle: Text(value),
+      contentPadding: const EdgeInsets.all(0),
     );
   }
 }

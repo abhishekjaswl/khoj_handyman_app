@@ -80,7 +80,6 @@ class AuthService {
     required BuildContext context,
     required String firstName,
     required String lastName,
-    required String dob,
     required String role,
     required String email,
     required String phone,
@@ -90,7 +89,6 @@ class AuthService {
     var regBody = {
       'firstName': firstName,
       'lastName': lastName,
-      'dob': dob,
       'role': role,
       'email': email,
       'phone': phone,

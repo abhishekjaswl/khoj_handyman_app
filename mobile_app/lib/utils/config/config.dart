@@ -8,5 +8,6 @@ const checkEmailApi = "${url}auth/checkEmail";
 const getRegisOTP = "${url}auth/getRegisOTP";
 const allUsersApi = "${url}user/allUsers";
 const uploadProfilePicApi = "${url}user/uploadProfilePic";
+const uploadKYCApi = "${url}user/uploadKYCApi";
 const verWorkerList = "${url}booking/verWorkerList";
 const verifyOTPApi = "${url}auth/verifyOTP";

@@ -83,33 +83,27 @@ class _CstmDrawerState extends State<CstmDrawer> {
               ),
             ),
           ),
-          Expanded(
-            child: ListView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                ListTileItem(
-                  leading: Icons.person_4_outlined,
-                  title: 'Profile',
-                  onTap: () => redirectFunc(const ProfilePage()),
-                ),
-                ListTileItem(
-                  leading: Icons.abc,
-                  title: 'Unknown',
-                  onTap: () {},
-                ),
-                ListTileItem(
-                  leading: Icons.abc,
-                  title: 'Unknown',
-                  onTap: () {},
-                ),
-                ListTileItem(
-                  leading: Icons.abc,
-                  title: 'Unknown',
-                  onTap: () {},
-                ),
-              ],
-            ),
+          ListTileItem(
+            leading: Icons.person_4_outlined,
+            title: 'Profile',
+            onTap: () => redirectFunc(const ProfilePage()),
           ),
+          ListTileItem(
+            leading: Icons.abc,
+            title: 'Unknown',
+            onTap: () {},
+          ),
+          ListTileItem(
+            leading: Icons.abc,
+            title: 'Unknown',
+            onTap: () {},
+          ),
+          ListTileItem(
+            leading: Icons.abc,
+            title: 'Unknown',
+            onTap: () {},
+          ),
+          const Spacer(),
           const Divider(height: 0),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 30),

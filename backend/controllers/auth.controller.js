@@ -29,7 +29,7 @@ exports.login = async (req, res, next) => {
 
 exports.register = async (req, res, next) => {
     try {
-        const { firstName, lastName, dob, role, email, phone, password } = req.body;
+        const { firstName, lastName, role, email, phone, password } = req.body;
 
         console.log(role);
 
@@ -38,7 +38,7 @@ exports.register = async (req, res, next) => {
         if (existingUser) {
             return next('User already exists.');
         }
-        const user = await AuthService.registerUser(firstName, lastName, dob, role, email, phone, password);
+        const user = await AuthService.registerUser(firstName, lastName, role, email, phone, password);
 
         let worker; // Initialize the worker variable
 
