@@ -23,10 +23,14 @@ class CstmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          backgroundColor: btnColor ?? Theme.of(context).colorScheme.tertiary,
-          padding: const EdgeInsets.symmetric(
-            vertical: 15,
-          )),
+        backgroundColor: btnColor ?? Theme.of(context).colorScheme.tertiary,
+        padding: const EdgeInsets.symmetric(
+          vertical: 15,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
       onPressed: Provider.of<IsLoadingData>(context).isLoading == true
           ? null
           : onPressed,

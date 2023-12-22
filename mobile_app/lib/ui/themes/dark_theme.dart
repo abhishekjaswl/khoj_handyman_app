@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 ThemeData darkTheme = ThemeData(
+  useMaterial3: true,
   fontFamily: 'Comfortaa',
   brightness: Brightness.dark,
   scaffoldBackgroundColor: Colors.black,
-  dividerColor: Colors.teal,
   datePickerTheme: const DatePickerThemeData(
       headerBackgroundColor: Colors.teal,
       dayOverlayColor: MaterialStatePropertyAll(Colors.teal)),
@@ -19,7 +19,7 @@ ThemeData darkTheme = ThemeData(
   colorScheme: ColorScheme.dark(
     background: Colors.grey[900]!,
     primary: Colors.white,
-    secondary: Colors.grey[500]!,
+    secondary: Colors.grey[700]!,
     tertiary: Colors.teal,
   ),
 );

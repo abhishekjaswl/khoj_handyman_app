@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 
 ThemeData lightTheme = ThemeData(
+  useMaterial3: true,
   fontFamily: 'Comfortaa',
   brightness: Brightness.light,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: Colors.grey[300]!,
   dividerColor: Colors.teal,
   datePickerTheme: const DatePickerThemeData(
       headerBackgroundColor: Colors.teal,
       dayOverlayColor: MaterialStatePropertyAll(Colors.teal)),
   progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.teal),
   drawerTheme: DrawerThemeData(backgroundColor: Colors.grey[300]!),
-  appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.white,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.grey[300]!,
     foregroundColor: Colors.black,
   ),
-  cardTheme: CardTheme(color: Colors.grey[300]!),
+  cardTheme: const CardTheme(color: Colors.white),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.black,
     foregroundColor: Colors.white,

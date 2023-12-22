@@ -17,38 +17,28 @@ class _KYCPageState extends State<KYCPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('KYC Form'),
+          bottom: TabBar(
+            indicatorSize: TabBarIndicatorSize.tab,
+            labelColor: Theme.of(context).colorScheme.tertiary,
+            dividerColor: Colors.black,
+            labelStyle: const TextStyle(
+              fontSize: 15,
+            ),
+            tabs: const [
+              Tab(
+                text: 'Verification Details',
+              ),
+              Tab(
+                text: 'Location',
+              ),
+            ],
+          ),
         ),
-        body: Column(
-          children: <Widget>[
-            const SizedBox(
-              height: 10,
-            ),
-            TabBar(
-              indicatorWeight: 0.7,
-              labelColor: Theme.of(context).colorScheme.tertiary,
-              unselectedLabelColor: Colors.white,
-              dividerColor: Colors.white,
-              labelStyle: const TextStyle(
-                fontSize: 15,
-              ),
-              tabs: const [
-                Tab(
-                  text: 'Verification Details',
-                ),
-                Tab(
-                  text: 'Location',
-                ),
-              ],
-            ),
-            const Expanded(
-              child: TabBarView(
-                children: [
-                  UploadDocuments(),
-                  UploadLocation(),
-                ],
-                physics: NeverScrollableScrollPhysics(),
-              ),
-            ),
+        body: const TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            UploadDocuments(),
+            UploadLocation(),
           ],
         ),
       ),

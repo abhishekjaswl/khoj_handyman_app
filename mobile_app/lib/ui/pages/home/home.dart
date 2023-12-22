@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
+import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/currentuser_provider.dart';
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
     _workerListFuture = _getWorkers();
   }
 
+  // returns the list of verified workers
   Future<List<User>> _getWorkers() async {
     try {
       return await BookingService.getVerWorkers();
@@ -77,14 +79,11 @@ class _HomePageState extends State<HomePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Welcome Back, ${Provider.of<CurrentUser>(context).user.firstName}',
+                            'Welcome Back, ${'${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'.toTitleCase()}',
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 10,
                           ),
                           const Text(
                             'What are we up to today?',
@@ -96,12 +95,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Card(
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.horizontal(left: Radius.circular(10))),
                   margin: const EdgeInsets.symmetric(horizontal: 8),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.only(left: 10, top: 10),
                         child: Text(
                           'Categories',
                           style: TextStyle(
@@ -111,14 +113,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       SizedBox(
-                        height: 160, // Adjust the height as needed
+                        height: 160,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: categories.length,
                           itemBuilder: (BuildContext context, int index) {
                             Category category = categories[index];
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.all(5),
                               child: GestureDetector(
                                 onTap: () {
                                   // Handle category selection
@@ -128,7 +130,7 @@ class _HomePageState extends State<HomePage> {
                                   decoration: BoxDecoration(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -157,7 +159,9 @@ class _HomePageState extends State<HomePage> {
                                       const SizedBox(height: 8),
                                       Text(
                                         category.name,
-                                        style: const TextStyle(fontSize: 16),
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700),
                                         textAlign: TextAlign.center,
                                       ),
                                     ],

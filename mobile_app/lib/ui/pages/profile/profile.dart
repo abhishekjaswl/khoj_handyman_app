@@ -79,9 +79,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
                           Text(
                             Provider.of<CurrentUser>(context).user.email,
                             style: const TextStyle(
@@ -123,13 +120,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.6,
+                            width: MediaQuery.of(context).size.width / 1.9,
                             child: const Text(
                               'You are not verified. Please fill up the KYC to be verified.',
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                          ElevatedButton(
+                          FilledButton(
                             child: const Text('KYC Form'),
                             onPressed: () =>
                                 {Navigator.pushNamed(context, '/kyc')},
@@ -249,7 +249,6 @@ class UserInfoItem extends StatelessWidget {
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 5),
             Text(
               value,
               style: const TextStyle(

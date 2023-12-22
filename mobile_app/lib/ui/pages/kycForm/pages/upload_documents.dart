@@ -29,7 +29,7 @@ enum IconLabel {
 class _UploadDocumentsState extends State<UploadDocuments> {
   final UploadImageService uploadImageService = UploadImageService();
 
-  final TextEditingController iconController = TextEditingController();
+  final TextEditingController dropdownController = TextEditingController();
 
   IconLabel? selectedIcon;
 
@@ -40,6 +40,39 @@ class _UploadDocumentsState extends State<UploadDocuments> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: DropdownMenu<IconLabel>(
+                textStyle: const TextStyle(fontSize: 17),
+                controller: dropdownController,
+                width: MediaQuery.of(context).size.width / 1.05,
+                label: const Text('What service can you provide?'),
+                inputDecorationTheme: InputDecorationTheme(
+                  fillColor: Theme.of(context).colorScheme.secondary,
+                  filled: true,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onSelected: (IconLabel? icon) {
+                  setState(() {
+                    selectedIcon = icon;
+                  });
+                },
+                dropdownMenuEntries:
+                    IconLabel.values.map<DropdownMenuEntry<IconLabel>>(
+                  (IconLabel icon) {
+                    return DropdownMenuEntry<IconLabel>(
+                      value: icon,
+                      label: icon.label,
+                      leadingIcon: Icon(icon.icon),
+                    );
+                  },
+                ).toList(),
+              ),
+            ),
             Card(
               margin: EdgeInsets.zero,
               child: Padding(
@@ -62,8 +95,8 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                         );
                       },
                       child: Card(
-                        color: Colors.black,
-                        margin: const EdgeInsets.only(top: 10),
+                        color: Theme.of(context).colorScheme.secondary,
+                        margin: const EdgeInsets.only(top: 5),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
@@ -110,7 +143,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                     GestureDetector(
                       onTap: () {},
                       child: Card(
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.secondary,
                         margin: const EdgeInsets.only(top: 10),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -157,36 +190,6 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                     ),
                   ],
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: DropdownMenu<IconLabel>(
-                controller: iconController,
-                width: MediaQuery.of(context).size.width,
-                enableFilter: true,
-                requestFocusOnTap: true,
-                leadingIcon: const Icon(Icons.search),
-                label: const Text('What service can you provide?'),
-                inputDecorationTheme: const InputDecorationTheme(
-                  filled: true,
-                  contentPadding: EdgeInsets.symmetric(vertical: 20),
-                ),
-                onSelected: (IconLabel? icon) {
-                  setState(() {
-                    selectedIcon = icon;
-                  });
-                },
-                dropdownMenuEntries:
-                    IconLabel.values.map<DropdownMenuEntry<IconLabel>>(
-                  (IconLabel icon) {
-                    return DropdownMenuEntry<IconLabel>(
-                      value: icon,
-                      label: icon.label,
-                      leadingIcon: Icon(icon.icon),
-                    );
-                  },
-                ).toList(),
               ),
             ),
           ],

@@ -39,7 +39,6 @@ class UploadImageService {
                   ).user.id,
                   purpose: purpose,
                 );
-                Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -72,7 +71,6 @@ class UploadImageService {
                   ).user.id,
                   purpose: purpose,
                 );
-                Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
@@ -112,6 +110,7 @@ class UploadImageService {
       final imageFile = File(pickedFile.path);
       final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
 
+      Navigator.of(context).pop();
       final result = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
           imageFile.path,

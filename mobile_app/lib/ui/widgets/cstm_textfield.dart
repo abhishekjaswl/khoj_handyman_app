@@ -46,12 +46,11 @@ class _CstmTextFieldState extends State<CstmTextField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.only(bottom: 12),
       child: TextFormField(
         controller: widget.mainController,
         obscureText: _isPassword,
         keyboardType: widget.inputType,
-        textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           labelText: widget.text,
           labelStyle: const TextStyle(fontSize: 15),
@@ -63,7 +62,7 @@ class _CstmTextFieldState extends State<CstmTextField> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
           ),
-          contentPadding: const EdgeInsets.all(14),
+          contentPadding: const EdgeInsets.all(13),
           prefixIcon: widget.prefixIcon != null
               ? Icon(
                   widget.prefixIcon,

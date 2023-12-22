@@ -30,18 +30,31 @@ class _CstmDrawerState extends State<CstmDrawer> {
       child: Column(
         children: [
           DrawerHeader(
+            margin: const EdgeInsets.only(bottom: 0),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black,
+                  Colors.white,
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+              ),
+            ),
             padding: EdgeInsets.zero,
             child: UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(color: Colors.black38),
+              margin: const EdgeInsets.only(bottom: 0),
+              decoration: const BoxDecoration(
+                color: Colors.black38,
+              ),
               accountName: Text(
-                'Welcome Back, ${Provider.of<CurrentUser>(context).user.firstName}',
-                style: const TextStyle(fontSize: 18),
+                '${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'
+                    .toTitleCase(),
               ),
               accountEmail: Text(
                 Provider.of<CurrentUser>(context).user.email,
                 overflow: TextOverflow.ellipsis,
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.secondary),
+                style: const TextStyle(color: Colors.grey),
               ),
               currentAccountPicture: Avatar(
                 sources: [
@@ -52,7 +65,6 @@ class _CstmDrawerState extends State<CstmDrawer> {
                   color: Theme.of(context).colorScheme.primary,
                   width: 2,
                 ),
-                shape: AvatarShape.circle(50),
                 placeholderColors: const [
                   Colors.blueGrey,
                   Colors.lime,
@@ -74,48 +86,31 @@ class _CstmDrawerState extends State<CstmDrawer> {
           Expanded(
             child: ListView(
               physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
               children: [
-                ListTile(
-                  leading: const Icon(Icons.person_4_outlined),
-                  title: const Text('Profile'),
-                  onTap: () {
-                    redirectFunc(ProfilePage());
-                  },
+                ListTileItem(
+                  leading: Icons.person_4_outlined,
+                  title: 'Profile',
+                  onTap: () => redirectFunc(const ProfilePage()),
                 ),
-                const Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.abc),
-                  title: const Text('Unknown'),
+                ListTileItem(
+                  leading: Icons.abc,
+                  title: 'Unknown',
                   onTap: () {},
                 ),
-                const Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.abc),
-                  title: const Text('Unknown'),
+                ListTileItem(
+                  leading: Icons.abc,
+                  title: 'Unknown',
                   onTap: () {},
                 ),
-                const Divider(
-                  height: 0,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.abc),
-                  title: const Text('Unknown'),
+                ListTileItem(
+                  leading: Icons.abc,
+                  title: 'Unknown',
                   onTap: () {},
-                ),
-                const Divider(
-                  height: 0,
                 ),
               ],
             ),
           ),
-          const Divider(
-            height: 0,
-          ),
+          const Divider(height: 0),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 30),
             trailing: Icon(
@@ -127,12 +122,10 @@ class _CstmDrawerState extends State<CstmDrawer> {
                     ? 'Dark Mode'
                     : 'Light Mode'),
             onTap: () {
-              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+              context.read<ThemeProvider>().toggleTheme();
             },
           ),
-          const Divider(
-            height: 0,
-          ),
+          const Divider(height: 0),
           ListTile(
             textColor: Colors.red,
             iconColor: Colors.red,
@@ -146,14 +139,58 @@ class _CstmDrawerState extends State<CstmDrawer> {
               )
             },
           ),
-          const Divider(
-            height: 0,
-          ),
-          const SizedBox(
-            height: 5,
-          ),
         ],
       ),
     );
   }
 }
+
+class ListTileItem extends StatelessWidget {
+  final IconData leading;
+  final String title;
+  final Function()? onTap;
+
+  const ListTileItem({
+    required this.leading,
+    required this.title,
+    required this.onTap,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(leading),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 14),
+          ),
+          onTap: onTap,
+        ),
+        const Divider(
+          height: 0,
+          thickness: 0.9,
+        ),
+      ],
+    );
+  }
+}
+
+// class ListTileItem extends StatelessWidget {
+//   ListTileItem({
+//     super.key,
+//     required IconData leading,
+//     required String title,
+//     required Function()? onTap,
+//   }) : super(
+//           leading: Icon(leading),
+//           title: Text(
+//             title,
+//             style: const TextStyle(fontSize: 15),
+//           ),
+//           onTap: onTap,
+//         );
+//         const Divider(height: 0),
+// }
