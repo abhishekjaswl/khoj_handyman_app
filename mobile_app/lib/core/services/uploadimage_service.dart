@@ -17,84 +17,66 @@ class UploadImageService {
     required BuildContext? context,
     required String purpose,
   }) async {
-    return showDialog(
+    return showModalBottomSheet<void>(
+      useRootNavigator: true,
       context: context!,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          'Select image from',
-          textAlign: TextAlign.center,
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                await uploadPicture(
-                  source: ImageSource.gallery,
-                  context: context,
-                  id: Provider.of<CurrentUser>(
-                    context,
-                    listen: false,
-                  ).user.id,
-                  purpose: purpose,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 200,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Upload Image From:',
+                style: TextStyle(fontSize: 20),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.image,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  Text(
-                    'Gallery',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
+              const Divider(
+                color: Colors.grey,
               ),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await uploadPicture(
-                  source: ImageSource.camera,
-                  context: context,
-                  id: Provider.of<CurrentUser>(
-                    context,
-                    listen: false,
-                  ).user.id,
-                  purpose: purpose,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 2.7),
+                leading: const Icon(Icons.image),
+                title: const Text('Gallery'),
+                onTap: () async {
+                  await uploadPicture(
+                    source: ImageSource.gallery,
+                    context: context,
+                    id: Provider.of<CurrentUser>(
+                      context,
+                      listen: false,
+                    ).user.id,
+                    purpose: purpose,
+                  );
+                },
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.camera_alt,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  Text(
-                    'Camera',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
+              const Divider(
+                height: 0,
+                indent: 50,
+                endIndent: 50,
+                color: Colors.grey,
               ),
-            ),
-          ],
-        ),
-      ),
+              ListTile(
+                contentPadding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width / 2.75),
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () async {
+                  await uploadPicture(
+                    source: ImageSource.camera,
+                    context: context,
+                    id: Provider.of<CurrentUser>(
+                      context,
+                      listen: false,
+                    ).user.id,
+                    purpose: purpose,
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -110,15 +92,13 @@ class UploadImageService {
       final imageFile = File(pickedFile.path);
       final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
 
-      Navigator.of(context).pop();
       final result = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
           imageFile.path,
-          folder:
-              // ignore: use_build_context_synchronously
-              'users/$purpose/$id',
+          folder: 'users/$purpose/$id',
         ),
       );
+      Navigator.of(context).pop();
 
       final regBody = {
         'id': id,
@@ -166,6 +146,7 @@ class UploadImageService {
         );
       }
     } else {
+      Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
         CstmSnackBar(
           text: 'Cancelled by user!',

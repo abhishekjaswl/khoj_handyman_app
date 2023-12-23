@@ -132,35 +132,54 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: DropdownMenu<IconLabel>(
-                  textStyle: const TextStyle(fontSize: 17),
-                  controller: dropdownController,
-                  width: MediaQuery.of(context).size.width / 1.05,
-                  label: const Text('Select a service you can provide.'),
-                  inputDecorationTheme: InputDecorationTheme(
-                    filled: true,
-                    contentPadding: const EdgeInsets.all(13),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
+              Card(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Your Job',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: DropdownMenu<IconLabel>(
+                          textStyle: const TextStyle(fontSize: 17),
+                          controller: dropdownController,
+                          width: MediaQuery.of(context).size.width / 1.1,
+                          label:
+                              const Text('Select a service you can provide.'),
+                          inputDecorationTheme: InputDecorationTheme(
+                            filled: true,
+                            contentPadding: const EdgeInsets.all(13),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onSelected: (IconLabel? icon) {
+                            setState(() {
+                              selectedIcon = icon;
+                            });
+                          },
+                          dropdownMenuEntries: IconLabel.values
+                              .map<DropdownMenuEntry<IconLabel>>(
+                            (IconLabel icon) {
+                              return DropdownMenuEntry<IconLabel>(
+                                value: icon,
+                                label: icon.label,
+                                leadingIcon: Icon(icon.icon),
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ),
+                    ],
                   ),
-                  onSelected: (IconLabel? icon) {
-                    setState(() {
-                      selectedIcon = icon;
-                    });
-                  },
-                  dropdownMenuEntries:
-                      IconLabel.values.map<DropdownMenuEntry<IconLabel>>(
-                    (IconLabel icon) {
-                      return DropdownMenuEntry<IconLabel>(
-                        value: icon,
-                        label: icon.label,
-                        leadingIcon: Icon(icon.icon),
-                      );
-                    },
-                  ).toList(),
                 ),
               ),
               Card(

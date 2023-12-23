@@ -22,6 +22,13 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile'),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.edit),
+          ),
+          const SizedBox(width: 10),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -137,99 +144,113 @@ class _ProfilePageState extends State<ProfilePage> {
                 : Container(),
             Card(
               margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const UserInfoItem(
-                      icon: Icons.work_outline,
-                      label: 'Job',
-                      value: 'Coming Soon...',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const UserInfoItem(
+                    icon: Icons.work_outline,
+                    label: 'Job',
+                    value: 'Coming Soon...',
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.circle_outlined),
+                    title: const Text(
+                      'Status',
+                      style: TextStyle(fontWeight: FontWeight.w700),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet<void>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SizedBox(
-                              height: 200,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    const Text('Modal BottomSheet'),
-                                    ElevatedButton(
-                                      child: const Text('Close BottomSheet'),
-                                      onPressed: () => Navigator.pop(context),
-                                    ),
-                                  ],
+                    subtitle: const Text('Coming Soon...'),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SizedBox(
+                            height: 200,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.circle_outlined,
+                                    color: Colors.green,
+                                  ),
+                                  title: const Text(
+                                    'Available',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
+                                  ),
+                                  subtitle: const Text(
+                                      'You will receive booking requests.'),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  onTap: () => {},
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                      child: const UserInfoItem(
-                        icon: Icons.circle_outlined,
-                        label: 'Status',
-                        value: 'Coming Soon...',
-                      ),
-                    ),
-                  ],
-                ),
+                                ListTile(
+                                  leading: const Icon(
+                                    Icons.circle_outlined,
+                                    color: Colors.redAccent,
+                                  ),
+                                  title: const Text(
+                                    'Unavailable',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w700),
+                                  ),
+                                  subtitle: const Text(
+                                      'You will NOT receive booking requests.'),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
+                                  onTap: () => {},
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
             Card(
               margin: const EdgeInsets.only(right: 10, left: 10, bottom: 5),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    UserInfoItem(
-                      icon: Icons.person_4_outlined,
-                      label: 'Role',
-                      value: Provider.of<CurrentUser>(context)
-                          .user
-                          .role
-                          .toTitleCase(),
-                    ),
-                    UserInfoItem(
-                      icon: Icons.phone_iphone,
-                      label: 'Phone Number',
-                      value: Provider.of<CurrentUser>(context)
-                          .user
-                          .phone
-                          .toString(),
-                    ),
-                    UserInfoItem(
-                      icon: Icons.calendar_month_outlined,
-                      label: 'Date of Birth',
-                      value: Provider.of<CurrentUser>(context).user.dob,
-                    ),
-                    const UserInfoItem(
-                      icon: Icons.male,
-                      label: 'Gender',
-                      value: 'Coming Soon...',
-                    ),
-                    const UserInfoItem(
-                      icon: Icons.place_outlined,
-                      label: 'Address',
-                      value: 'Coming Soon...',
-                    ),
-                  ],
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  UserInfoItem(
+                    icon: Icons.person_4_outlined,
+                    label: 'Role',
+                    value: Provider.of<CurrentUser>(context)
+                        .user
+                        .role
+                        .toTitleCase(),
+                  ),
+                  UserInfoItem(
+                    icon: Icons.phone_iphone,
+                    label: 'Phone Number',
+                    value:
+                        Provider.of<CurrentUser>(context).user.phone.toString(),
+                  ),
+                  UserInfoItem(
+                    icon: Icons.calendar_month_outlined,
+                    label: 'Date of Birth',
+                    value: Provider.of<CurrentUser>(context).user.dob,
+                  ),
+                  const UserInfoItem(
+                    icon: Icons.male,
+                    label: 'Gender',
+                    value: 'Coming Soon...',
+                  ),
+                  const UserInfoItem(
+                    icon: Icons.place_outlined,
+                    label: 'Address',
+                    value: 'Coming Soon...',
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: (() => {}),
-        label: const Text('Edit Profile'),
-        icon: const Icon(Icons.edit_document),
       ),
     );
   }
@@ -239,23 +260,30 @@ class UserInfoItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final Function()? onTap;
 
   const UserInfoItem({
     required this.icon,
     required this.label,
     required this.value,
+    this.onTap,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: Icon(icon),
+      leading: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.tertiary,
+      ),
       title: Text(
         label,
+        style: const TextStyle(fontWeight: FontWeight.w700),
       ),
       subtitle: Text(value),
-      contentPadding: const EdgeInsets.all(0),
+      onTap: onTap,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
     );
   }
 }

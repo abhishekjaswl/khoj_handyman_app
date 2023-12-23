@@ -20,8 +20,8 @@ class UserService {
     final regBody = {
       'id': id,
       'citizenshipUrl': citizenshipUrl,
-      'paymentQrUrl': paymentQrUrl!,
-      'job': job!,
+      'paymentQrUrl': paymentQrUrl,
+      'job': job,
       'latitude': latitude,
       'longitude': longitude,
       'address': address,

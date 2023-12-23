@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import 'core/providers/currentuser_provider.dart';
 import 'core/providers/loading_provider.dart';
-import 'ui/pages/home/home.dart';
+import 'ui/pages/home/pages/home.dart';
 import 'ui/pages/loginregister/login.dart';
 import 'ui/pages/loginregister/register.dart';
 
@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             '/login': (context) => const LoginPage(),
             '/register': (context) => const RegisterPage(),
             '/home': (context) => const HomePage(),
-            '/profile': (context) => ProfilePage(),
+            '/profile': (context) => const ProfilePage(),
             '/kyc': (context) => const KYCPage(),
           },
         ),
