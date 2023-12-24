@@ -1,4 +1,3 @@
-const otpModel = require('../models/otp.model');
 const WorkerModel = require('../models/worker.model');
 const AuthService = require('../services/auth.service');
 
@@ -30,8 +29,6 @@ exports.login = async (req, res, next) => {
 exports.register = async (req, res, next) => {
     try {
         const { firstName, lastName, role, email, phone, password } = req.body;
-
-        console.log(role);
 
         const existingUser = await AuthService.checkUser(email);
 
@@ -112,7 +109,6 @@ exports.verifyOTP = async (req, res, next) => {
         const email = req.params.email;
         const otp = req.params.otp;
         const purpose = req.params.purpose;
-        console.log('ok');
         const verify = await AuthService.checkOTP(email, otp, purpose);
 
         if (!verify) {

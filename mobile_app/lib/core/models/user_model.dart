@@ -1,11 +1,12 @@
-class User {
+class UserModel {
   String id;
   String firstName;
   String lastName;
+  String? dob;
   String email;
   int phone;
-  String dob;
   String role;
+  String? gender;
   String status;
   String? profilePicUrl;
   String? citizenshipUrl;
@@ -13,14 +14,15 @@ class User {
   double? longitude;
   String? address;
 
-  User(
+  UserModel(
     this.id,
     this.firstName,
     this.lastName,
+    this.dob,
     this.email,
     this.phone,
-    this.dob,
     this.role,
+    this.gender,
     this.status,
     this.profilePicUrl,
     this.citizenshipUrl,
@@ -29,15 +31,16 @@ class User {
     this.address,
   );
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       (json['_id']),
       (json['firstName']),
       (json['lastName']),
+      (json['dob']),
       (json['email']),
       (json['phone']),
-      (json['dob']),
       (json['role']),
+      (json['gender']),
       (json['status']),
       (json['profilePicUrl']),
       (json['citizenshipUrl']),
@@ -55,6 +58,7 @@ class User {
         'phone': phone,
         'dob': dob,
         'role': role,
+        'gender': gender,
         'status': status,
         'profilePicUrl': profilePicUrl,
         'citizenshipUrl': citizenshipUrl,

@@ -10,20 +10,7 @@ exports.allUsers = async (req, res, next) => {
     }
 }
 
-// exports.uploadProfilePic = async (req, res, next) => {
-//     try {
-//         const { id, profilePicUrl } = req.body;
-
-//         await UserModel.findOneAndUpdate({ _id: id }, { profilePicUrl }, { new: true, runValidators: true })
-
-//         res.status(200).json('Profile picture uploaded successfully.');
-
-//     } catch (error) {
-//         return next(error);
-//     }
-// }
-
-exports.uploadProfilePic = async (req, res, next) => {
+exports.uploadPicture = async (req, res, next) => {
     try {
         const { id, picUrl, purpose } = req.body;
 
@@ -41,6 +28,23 @@ exports.uploadProfilePic = async (req, res, next) => {
         res.status(200).json(`${purpose} uploaded successfully.`);
 
     } catch (error) {
+        return next(error);
+    }
+}
+
+exports.uploadKYC = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const { latitude, longitude, address, job, dob, gender } = req.body;
+
+        const user = await UserModel.findOneAndUpdate({ _id: id }, { latitude, longitude, address, dob, gender, status: 'pending' }, { new: true, runValidators: true });
+
+        const worker = await WorkerModel.findOneAndUpdate({ _id: id }, { job }, { new: true, runValidators: true });
+
+        res.status(200).json({ user, worker });
+    } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

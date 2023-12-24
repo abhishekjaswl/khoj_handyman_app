@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<User>> _workerListFuture;
+  late Future<List<UserModel>> _workerListFuture;
   final AuthService authService = AuthService();
 
   List<Category> categories = [
@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // returns the list of verified workers
-  Future<List<User>> _getWorkers() async {
+  Future<List<UserModel>> _getWorkers() async {
     try {
       return await BookingService.getVerWorkers();
     } catch (e) {
@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverToBoxAdapter(
-            child: FutureBuilder<List<User>>(
+            child: FutureBuilder<List<UserModel>>(
               future: _workerListFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -217,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: userList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      User user = userList[index];
+                      UserModel user = userList[index];
                       return CstmCard(
                         user: user,
                       );

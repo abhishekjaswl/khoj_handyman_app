@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:mobile_app/ui/widgets/cstm_button.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../core/providers/currentuser_provider.dart';
 import '../../../widgets/cstm_snackbar.dart';
 
 class UploadLocation extends StatefulWidget {
@@ -21,7 +22,7 @@ class _UploadLocationState extends State<UploadLocation> {
 
   static const CameraPosition _kathmandu = CameraPosition(
     target: LatLng(27.7172, 85.3240),
-    zoom: 15,
+    zoom: 16,
   );
 
   Marker? _userMarker;
@@ -42,41 +43,30 @@ class _UploadLocationState extends State<UploadLocation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(5),
-        child: Column(
-          children: [
-            const Text(
-              'Long press on the map to set your location.',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const Spacer(),
-            SizedBox(
-              height: 580,
-              child: GoogleMap(
-                myLocationEnabled: true,
-                myLocationButtonEnabled: true,
-                mapType: MapType.normal,
-                initialCameraPosition: _kathmandu,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-                onLongPress: _onMapLongPress,
-                markers: _userMarker != null ? <Marker>{_userMarker!} : {},
-              ),
-            ),
-            const Spacer(),
-            CstmButton(
-              text: 'Submit KYC',
-              leadingIcon: const Icon(
-                Icons.drive_folder_upload,
-                color: Colors.white,
-              ),
-              onPressed: () {},
-            )
-          ],
-        ),
+      body: GoogleMap(
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
+        mapType: MapType.normal,
+        initialCameraPosition: _kathmandu,
+        onMapCreated: (GoogleMapController controller) {
+          _controller.complete(controller);
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return const SizedBox(
+                height: 100,
+                child: Center(
+                    child: Text(
+                  'Long press anywhere on the map to set your address!',
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                )),
+              );
+            },
+          );
+        },
+        onLongPress: _onMapLongPress,
+        markers: _userMarker != null ? <Marker>{_userMarker!} : {},
       ),
     );
   }
@@ -94,8 +84,16 @@ class _UploadLocationState extends State<UploadLocation> {
       String locationName = placemarks.first.name ?? "Unknown Location";
       String street = placemarks.first.street ?? "Unknown Location";
 
+      Placemark place = placemarks.first;
+
       print('Location Name: $locationName');
       print('Street Name: $street');
+
+      context.read<CurrentUser>().setAddress(
+            latLng.latitude.toDouble(),
+            latLng.longitude.toDouble(),
+            '${place.name}, ${place.locality}, ${place.country}',
+          );
 
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(

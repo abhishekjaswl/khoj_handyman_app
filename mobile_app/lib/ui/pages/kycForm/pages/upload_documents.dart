@@ -1,11 +1,14 @@
-import 'package:avatars/avatars.dart';
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
+
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/services/uploadimage_service.dart';
-import 'package:provider/provider.dart';
 
-import '../../../../core/providers/currentuser_provider.dart';
+import '../../../../core/services/user_service.dart';
 import '../../../widgets/cstm_datepicker.dart';
+import '../../../widgets/cstm_snackbar.dart';
 
 class UploadDocuments extends StatefulWidget {
   const UploadDocuments({super.key});
@@ -14,7 +17,7 @@ class UploadDocuments extends StatefulWidget {
   State<UploadDocuments> createState() => _UploadDocumentsState();
 }
 
-enum IconLabel {
+enum Jobs {
   plumbing('Plumbing', Icons.plumbing),
   electrical('Electrical', Icons.electrical_services),
   cleaning('Cleaning Services', Icons.cleaning_services),
@@ -22,7 +25,7 @@ enum IconLabel {
   painting('Painting', Icons.format_paint),
   landscaping('Landscaping', Icons.landscape);
 
-  const IconLabel(this.label, this.icon);
+  const Jobs(this.label, this.icon);
   final String label;
   final IconData icon;
 }
@@ -41,8 +44,32 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   final UploadImageService uploadImageService = UploadImageService();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController dropdownController = TextEditingController();
-  Gender genderView = Gender.male;
-  IconLabel? selectedIcon;
+  final UserService userService = UserService();
+  Gender selectedGender = Gender.male;
+  Jobs? jobView;
+  String? selectedJob;
+  File? selectedCitizenship;
+  File? selectedPaymentQR;
+
+  void uploadKYC() async {
+    if (selectedCitizenship != null && _dobController.text.isNotEmpty) {
+      await userService.uploadKYC(
+        context: context,
+        dob: _dobController.text.trim(),
+        citizenship: selectedCitizenship!,
+        gender: selectedGender.label,
+        job: selectedJob,
+        paymentQr: selectedPaymentQR,
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: 'Please fill up all the details!',
+          type: 'error',
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +82,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
               Card(
                 margin: EdgeInsets.zero,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -95,7 +122,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                             SegmentedButton<Gender>(
                               style: ButtonStyle(
                                 padding: const MaterialStatePropertyAll(
-                                    EdgeInsets.all(6)),
+                                    EdgeInsets.all(5.5)),
                                 shape: const MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
                                         borderRadius: BorderRadius.horizontal(
@@ -118,10 +145,10 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                                   icon: Icon(gender.icon),
                                 );
                               }).toList(),
-                              selected: <Gender>{genderView},
+                              selected: <Gender>{selectedGender},
                               onSelectionChanged: (Set<Gender> newSelection) {
                                 setState(() {
-                                  genderView = newSelection.first;
+                                  selectedGender = newSelection.first;
                                 });
                               },
                             ),
@@ -133,9 +160,9 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                 ),
               ),
               Card(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -148,7 +175,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: DropdownMenu<IconLabel>(
+                        child: DropdownMenu<Jobs>(
                           textStyle: const TextStyle(fontSize: 17),
                           controller: dropdownController,
                           width: MediaQuery.of(context).size.width / 1.1,
@@ -161,18 +188,20 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                           ),
-                          onSelected: (IconLabel? icon) {
+                          onSelected: (Jobs? job) {
                             setState(() {
-                              selectedIcon = icon;
+                              jobView = job;
+                              selectedJob = job!.label;
                             });
+                            print(selectedJob);
                           },
-                          dropdownMenuEntries: IconLabel.values
-                              .map<DropdownMenuEntry<IconLabel>>(
-                            (IconLabel icon) {
-                              return DropdownMenuEntry<IconLabel>(
-                                value: icon,
-                                label: icon.label,
-                                leadingIcon: Icon(icon.icon),
+                          dropdownMenuEntries:
+                              Jobs.values.map<DropdownMenuEntry<Jobs>>(
+                            (Jobs job) {
+                              return DropdownMenuEntry<Jobs>(
+                                value: job,
+                                label: job.label,
+                                leadingIcon: Icon(job.icon),
                               );
                             },
                           ).toList(),
@@ -198,10 +227,20 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                       ),
                       GestureDetector(
                         onTap: () async {
-                          await uploadImageService.showImageSourceDialog(
-                            context: context,
-                            purpose: 'Citizenship',
-                          );
+                          File? selectedImage = await uploadImageService
+                              .showImageSourceDialog(context: context);
+                          if (selectedImage != null) {
+                            setState(() {
+                              selectedCitizenship = selectedImage;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CstmSnackBar(
+                                text: 'Cancelled by user!',
+                                type: 'error',
+                              ),
+                            );
+                          }
                         },
                         child: Card(
                           color: Theme.of(context).colorScheme.secondary,
@@ -215,11 +254,9 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                                 SizedBox(
                                   height: 60,
                                   width: 60,
-                                  child: Provider.of<CurrentUser>(context)
-                                          .user
-                                          .citizenshipUrl!
-                                          .isEmpty
-                                      ? DottedBorder(
+                                  child: selectedCitizenship != null
+                                      ? Image.file(selectedCitizenship!)
+                                      : DottedBorder(
                                           borderType: BorderType.RRect,
                                           strokeCap: StrokeCap.square,
                                           radius: const Radius.circular(5),
@@ -234,16 +271,6 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                                               size: 20,
                                             ),
                                           ),
-                                        )
-                                      : Avatar(
-                                          shape: AvatarShape.circle(5),
-                                          sources: [
-                                            NetworkSource(
-                                                Provider.of<CurrentUser>(
-                                                        context)
-                                                    .user
-                                                    .citizenshipUrl!)
-                                          ],
                                         ),
                                 ),
                               ],
@@ -252,7 +279,22 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () async {
+                          File? selectedImage = await uploadImageService
+                              .showImageSourceDialog(context: context);
+                          if (selectedImage != null) {
+                            setState(() {
+                              selectedPaymentQR = selectedImage;
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              CstmSnackBar(
+                                text: 'Cancelled by user!',
+                                type: 'error',
+                              ),
+                            );
+                          }
+                        },
                         child: Card(
                           color: Theme.of(context).colorScheme.secondary,
                           margin: const EdgeInsets.only(top: 10),
@@ -265,11 +307,9 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                                 SizedBox(
                                   height: 60,
                                   width: 60,
-                                  child: Provider.of<CurrentUser>(context)
-                                          .user
-                                          .citizenshipUrl!
-                                          .isEmpty
-                                      ? DottedBorder(
+                                  child: selectedPaymentQR != null
+                                      ? Image.file(selectedPaymentQR!)
+                                      : DottedBorder(
                                           borderType: BorderType.RRect,
                                           strokeCap: StrokeCap.square,
                                           radius: const Radius.circular(5),
@@ -284,16 +324,6 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                                               size: 20,
                                             ),
                                           ),
-                                        )
-                                      : Avatar(
-                                          shape: AvatarShape.circle(5),
-                                          sources: [
-                                            NetworkSource(
-                                                Provider.of<CurrentUser>(
-                                                        context)
-                                                    .user
-                                                    .citizenshipUrl!)
-                                          ],
                                         ),
                                 ),
                               ],
@@ -308,6 +338,17 @@ class _UploadDocumentsState extends State<UploadDocuments> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          uploadKYC();
+        },
+        label: const Text('Submit KYC'),
+        icon: const Icon(
+          Icons.drive_folder_upload,
+        ),
+        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
       ),
     );
   }

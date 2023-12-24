@@ -22,6 +22,11 @@ const userSchema = new Schema({
         type: String,
         enum: ['user', 'worker', 'admin']
     },
+    gender: {
+        type: String,
+        lowercase: true,
+        enum: ['male', 'female', 'other'],
+    },
     email: {
         type: String,
         lowercase: true,
@@ -33,11 +38,6 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
-    },
-    gender: {
-        type: String,
-        lowercase: true,
-        enum: ['male', 'female', 'other'],
     },
     profilePicUrl: {
         type: String,

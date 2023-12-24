@@ -26,10 +26,10 @@ class _KYCPageState extends State<KYCPage> {
             ),
             tabs: const [
               Tab(
-                text: 'Verification Details',
+                text: 'Location',
               ),
               Tab(
-                text: 'Location',
+                text: 'Verification Details',
               ),
             ],
           ),
@@ -37,8 +37,8 @@ class _KYCPageState extends State<KYCPage> {
         body: const TabBarView(
           physics: NeverScrollableScrollPhysics(),
           children: [
-            UploadDocuments(),
             UploadLocation(),
+            UploadDocuments(),
           ],
         ),
       ),

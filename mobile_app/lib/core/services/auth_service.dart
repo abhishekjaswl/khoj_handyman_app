@@ -5,6 +5,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/core/models/worker_model.dart';
 import 'package:mobile_app/ui/widgets/cstm_snackbar.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
@@ -37,8 +38,13 @@ class AuthService {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
 
-        User userInfo = User.fromJson(jsonResponse["user"]);
+        UserModel userInfo = UserModel.fromJson(jsonResponse["user"]);
         context.read<CurrentUser>().setUser(userInfo);
+
+        if (jsonResponse["worker"] != null) {
+          WorkerModel workerInfo = WorkerModel.fromJson(jsonResponse["worker"]);
+          context.read<CurrentUser>().setWorker(workerInfo);
+        }
 
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(
@@ -111,9 +117,11 @@ class AuthService {
           ),
         );
 
-        User userInfo = User.fromJson(jsonResponse["user"]);
-
+        UserModel userInfo = UserModel.fromJson(jsonResponse["user"]);
         context.read<CurrentUser>().setUser(userInfo);
+
+        WorkerModel workerInfo = WorkerModel.fromJson(jsonResponse["worker"]);
+        context.read<CurrentUser>().setWorker(workerInfo);
 
         Navigator.pushReplacementNamed(context, '/home');
       } else {

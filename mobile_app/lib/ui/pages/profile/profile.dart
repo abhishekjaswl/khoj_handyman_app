@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:avatars/avatars.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/providers/currentuser_provider.dart';
 import '../../../core/services/uploadimage_service.dart';
 import '../../widgets/cstm_msgborder.dart';
+import '../../widgets/cstm_snackbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final UploadImageService uploadImageService = UploadImageService();
+  File? selectedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +40,28 @@ class _ProfilePageState extends State<ProfilePage> {
             Avatar(
               margin: const EdgeInsets.symmetric(vertical: 10),
               onTap: () async {
-                await uploadImageService.showImageSourceDialog(
+                File? selectedImage =
+                    await uploadImageService.showImageSourceDialog(
                   context: context,
-                  purpose: 'ProfilePic',
                 );
+                if (selectedImage != null) {
+                  // Do something with the selected image file
+                  setState(() {
+                    this.selectedImage = selectedImage;
+                  });
+                } else {
+                  // No image selected
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    CstmSnackBar(
+                      text: 'Cancelled by user!',
+                      type: 'error',
+                    ),
+                  );
+                }
               },
               sources: [
+                if (selectedImage != null)
+                  GenericSource(FileImage(selectedImage!)),
                 NetworkSource(
                     Provider.of<CurrentUser>(context).user.profilePicUrl!)
               ],
@@ -234,17 +254,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   UserInfoItem(
                     icon: Icons.calendar_month_outlined,
                     label: 'Date of Birth',
-                    value: Provider.of<CurrentUser>(context).user.dob,
+                    value: Provider.of<CurrentUser>(context).user.dob ?? 'N/A',
                   ),
-                  const UserInfoItem(
-                    icon: Icons.male,
-                    label: 'Gender',
-                    value: 'Coming Soon...',
-                  ),
-                  const UserInfoItem(
+                  UserInfoItem(
                     icon: Icons.place_outlined,
                     label: 'Address',
-                    value: 'Coming Soon...',
+                    value:
+                        Provider.of<CurrentUser>(context).user.address ?? 'N/A',
+                  ),
+                  UserInfoItem(
+                    icon: Icons.male,
+                    label: 'Gender',
+                    value:
+                        Provider.of<CurrentUser>(context).user.gender ?? 'N/A',
                   ),
                 ],
               ),

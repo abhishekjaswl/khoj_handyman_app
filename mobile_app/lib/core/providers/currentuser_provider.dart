@@ -1,24 +1,23 @@
 import 'package:flutter/widgets.dart';
 
 import '../models/user_model.dart';
+import '../models/worker_model.dart';
 
 class CurrentUser extends ChangeNotifier {
-  User _currentUser = User('', '', '', '', 0, '', '', '', '', '', 0, 0, '');
+  UserModel _currentUser =
+      UserModel('', '', '', '', '', 0, '', '', '', '', '', 0, 0, '');
+  WorkerModel _currentWorker = WorkerModel('', '', '', '');
 
-  User get user => _currentUser;
+  UserModel get user => _currentUser;
+  WorkerModel get worker => _currentWorker;
 
-  void setUser(User user) {
+  void setUser(UserModel user) {
     _currentUser = user;
     notifyListeners();
   }
 
-  void updateProfilePicUrl(String newProfilePicUrl) {
-    _currentUser.profilePicUrl = newProfilePicUrl;
-    notifyListeners();
-  }
-
-  void updateCitizenshipUrl(String newCitizenship) {
-    _currentUser.citizenshipUrl = newCitizenship;
+  void setWorker(WorkerModel worker) {
+    _currentWorker = worker;
     notifyListeners();
   }
 
@@ -34,6 +33,7 @@ class CurrentUser extends ChangeNotifier {
   }
 
   void logoutUser() {
-    _currentUser = User('', '', '', '', 0, '', '', '', '', '', 0, 0, '');
+    _currentUser =
+        UserModel('', '', '', '', '', 0, '', '', '', '', '', 0, 0, '');
   }
 }

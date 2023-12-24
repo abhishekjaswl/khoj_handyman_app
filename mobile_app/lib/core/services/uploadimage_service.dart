@@ -5,21 +5,16 @@ import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import '../../ui/widgets/cstm_snackbar.dart';
 import '../../utils/config/config.dart';
-import '../providers/currentuser_provider.dart';
-import 'package:mobile_app/core/services/user_service.dart';
 
 class UploadImageService {
-  final UserService userService = UserService();
-  Future<void> showImageSourceDialog({
-    required BuildContext? context,
-    required String purpose,
+  Future<File?> showImageSourceDialog({
+    required BuildContext context,
   }) async {
-    return showModalBottomSheet<void>(
+    return showModalBottomSheet<File?>(
       useRootNavigator: true,
-      context: context!,
+      context: context,
       builder: (BuildContext context) {
         return SizedBox(
           height: 200,
@@ -39,15 +34,13 @@ class UploadImageService {
                 leading: const Icon(Icons.image),
                 title: const Text('Gallery'),
                 onTap: () async {
-                  await uploadPicture(
-                    source: ImageSource.gallery,
-                    context: context,
-                    id: Provider.of<CurrentUser>(
-                      context,
-                      listen: false,
-                    ).user.id,
-                    purpose: purpose,
-                  );
+                  final picker = ImagePicker();
+                  final pickedFile =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    final imageFile = File(pickedFile.path);
+                    Navigator.of(context).pop(imageFile);
+                  }
                 },
               ),
               const Divider(
@@ -62,15 +55,13 @@ class UploadImageService {
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Camera'),
                 onTap: () async {
-                  await uploadPicture(
-                    source: ImageSource.camera,
-                    context: context,
-                    id: Provider.of<CurrentUser>(
-                      context,
-                      listen: false,
-                    ).user.id,
-                    purpose: purpose,
-                  );
+                  final picker = ImagePicker();
+                  final pickedFile =
+                      await picker.pickImage(source: ImageSource.camera);
+                  if (pickedFile != null) {
+                    final imageFile = File(pickedFile.path);
+                    Navigator.of(context).pop(imageFile);
+                  }
                 },
               ),
             ],
@@ -108,7 +99,7 @@ class UploadImageService {
 
       try {
         final response = await http.post(
-          Uri.parse(uploadProfilePicApi),
+          Uri.parse(uploadPictureApi),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(regBody),
         );
@@ -120,15 +111,15 @@ class UploadImageService {
               type: 'success',
             ),
           );
-          switch (purpose) {
-            case 'ProfilePic':
-              Provider.of<CurrentUser>(context, listen: false)
-                  .updateProfilePicUrl(result.secureUrl);
+          // switch (purpose) {
+          //   case 'ProfilePic':
+          //     Provider.of<CurrentUser>(context, listen: false)
+          //         .updateProfilePicUrl(result.secureUrl);
 
-            case 'Citizenship':
-              Provider.of<CurrentUser>(context, listen: false)
-                  .updateCitizenshipUrl(result.secureUrl);
-          }
+          //   case 'Citizenship':
+          //     Provider.of<CurrentUser>(context, listen: false)
+          //         .updateCitizenshipUrl(result.secureUrl);
+          // }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             CstmSnackBar(

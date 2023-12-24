@@ -4,7 +4,7 @@ import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 
 class CstmCard extends StatelessWidget {
-  final User user;
+  final UserModel user;
 
   const CstmCard({
     super.key,

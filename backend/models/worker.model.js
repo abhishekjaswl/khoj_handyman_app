@@ -4,10 +4,6 @@ const db = require('../config/db');
 const { Schema } = mongoose;
 
 const workerSchema = new Schema({
-    email: {
-        type: String,
-        lowercase: true
-    },
     job: {
         type: String,
         lowercase: true
