@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -73,32 +75,21 @@ class _UploadLocationState extends State<UploadLocation> {
 
   void _onMapLongPress(LatLng latLng) async {
     try {
-      print('Location: $latLng');
-      print('Latitude: ${latLng.latitude}');
-      print('Longitude: ${latLng.longitude}');
-
       // Reverse geocoding to get the address from coordinates
       List<Placemark> placemarks =
           await placemarkFromCoordinates(latLng.latitude, latLng.longitude);
 
-      String locationName = placemarks.first.name ?? "Unknown Location";
-      String street = placemarks.first.street ?? "Unknown Location";
-
       Placemark place = placemarks.first;
-
-      print('Location Name: $locationName');
-      print('Street Name: $street');
 
       context.read<CurrentUser>().setAddress(
             latLng.latitude.toDouble(),
             latLng.longitude.toDouble(),
-            '${place.name}, ${place.locality}, ${place.country}',
+            '${place.name}, ${place.street}, ${place.locality}',
           );
 
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         CstmSnackBar(
-          text: 'Street Name: $street',
+          text: 'Location Set: ${place.street}',
           type: 'success',
         ),
       );
@@ -117,7 +108,7 @@ class _UploadLocationState extends State<UploadLocation> {
           position: latLng,
           infoWindow: InfoWindow(
             title: 'Your Address',
-            snippet: '$locationName, $street',
+            snippet: '${place.name}, ${place.street}',
           ),
         );
       });

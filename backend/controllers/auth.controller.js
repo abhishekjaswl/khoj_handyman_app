@@ -31,17 +31,15 @@ exports.register = async (req, res, next) => {
         const { firstName, lastName, role, email, phone, password } = req.body;
 
         const existingUser = await AuthService.checkUser(email);
-
         if (existingUser) {
             return next('User already exists.');
         }
         const user = await AuthService.registerUser(firstName, lastName, role, email, phone, password);
 
-        let worker; // Initialize the worker variable
-
+        let worker;
         if (role == 'worker') {
             const workerInstance = new WorkerModel({ _id: user._id });
-            worker = await workerInstance.save(); // Save the worker instance and assign it to the variable
+            worker = await workerInstance.save();
         }
         res.status(200).json({ user, worker });
     } catch (error) {

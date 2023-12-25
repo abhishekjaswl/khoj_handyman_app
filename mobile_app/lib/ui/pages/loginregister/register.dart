@@ -42,7 +42,6 @@ class _RegisterPageState extends State<RegisterPage> {
         if (_firstNameController.text.isNotEmpty &&
             _lastNameController.text.isNotEmpty) {
           setState(() => _currentStep++);
-          _registerFormKey.currentState!.reset();
         } else {
           _registerFormKey.currentState!.validate();
         }
@@ -57,7 +56,6 @@ class _RegisterPageState extends State<RegisterPage> {
             lastName: _lastNameController.text,
           );
           if (otpResult == 'ok') {
-            _registerFormKey.currentState!.reset();
             setState(() => _currentStep++);
           } else {
             ScaffoldMessenger.of(context).showSnackBar(

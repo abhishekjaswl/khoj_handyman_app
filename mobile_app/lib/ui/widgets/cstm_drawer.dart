@@ -58,8 +58,10 @@ class _CstmDrawerState extends State<CstmDrawer> {
               ),
               currentAccountPicture: Avatar(
                 sources: [
-                  NetworkSource(
-                      Provider.of<CurrentUser>(context).user.profilePicUrl!)
+                  if (Provider.of<CurrentUser>(context).user.profilePicUrl !=
+                      null)
+                    NetworkSource(
+                        Provider.of<CurrentUser>(context).user.profilePicUrl!)
                 ],
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary,
@@ -67,14 +69,7 @@ class _CstmDrawerState extends State<CstmDrawer> {
                 ),
                 placeholderColors: const [
                   Colors.blueGrey,
-                  Colors.lime,
-                  Colors.cyan,
-                  Colors.deepOrange,
-                  Colors.green,
-                  Colors.orangeAccent,
-                  Colors.red,
                   Colors.teal,
-                  Colors.yellow,
                 ],
                 name: Provider.of<CurrentUser>(context)
                     .user

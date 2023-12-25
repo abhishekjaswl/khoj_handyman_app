@@ -2,10 +2,15 @@
 
 import 'dart:io';
 
+import 'package:avatars/avatars.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/services/uploadimage_service.dart';
+import 'package:mobile_app/ui/widgets/cstm_button.dart';
+import 'package:mobile_app/utils/extensions/string_ext.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../core/providers/currentuser_provider.dart';
 import '../../../../core/services/user_service.dart';
 import '../../../widgets/cstm_datepicker.dart';
 import '../../../widgets/cstm_snackbar.dart';
@@ -42,9 +47,10 @@ enum Gender {
 
 class _UploadDocumentsState extends State<UploadDocuments> {
   final UploadImageService uploadImageService = UploadImageService();
+  final UserService userService = UserService();
   final TextEditingController _dobController = TextEditingController();
   final TextEditingController dropdownController = TextEditingController();
-  final UserService userService = UserService();
+  File? selectedImage;
   Gender selectedGender = Gender.male;
   Jobs? jobView;
   String? selectedJob;
@@ -52,10 +58,24 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   File? selectedPaymentQR;
 
   void uploadKYC() async {
-    if (selectedCitizenship != null && _dobController.text.isNotEmpty) {
+    if (Provider.of<CurrentUser>(context, listen: false).user.role == 'user' &&
+        selectedCitizenship != null &&
+        selectedImage != null &&
+        _dobController.text.isNotEmpty) {
+      await userService.uploadKYC(
+          context: context,
+          dob: _dobController.text.trim(),
+          profilePic: selectedImage!,
+          citizenship: selectedCitizenship!,
+          gender: selectedGender.label);
+    } else if (Provider.of<CurrentUser>(context, listen: false).user.role ==
+            'worker' &&
+        selectedPaymentQR != null &&
+        selectedJob != null) {
       await userService.uploadKYC(
         context: context,
         dob: _dobController.text.trim(),
+        profilePic: selectedImage!,
         citizenship: selectedCitizenship!,
         gender: selectedGender.label,
         job: selectedJob,
@@ -74,39 +94,81 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(
-            children: [
-              Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Personal Details',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              children: [
+                Card(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Personal Details',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            Avatar(
+                              onTap: () async {
+                                File? selectedImage = await uploadImageService
+                                    .showImageSourceDialog(
+                                  context: context,
+                                );
+                                if (selectedImage != null) {
+                                  setState(() {
+                                    this.selectedImage = selectedImage;
+                                  });
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    CstmSnackBar(
+                                      text: 'Cancelled by user!',
+                                      type: 'error',
+                                    ),
+                                  );
+                                }
+                              },
+                              sources: [
+                                if (selectedImage != null)
+                                  GenericSource(FileImage(selectedImage!)),
+                                NetworkSource(
+                                    'https://img.freepik.com/premium-vector/gallery-icon-picture-landscape-vector-sign-symbol_660702-313.jpg?w=740'),
+                              ],
+                              border: Border.all(
+                                color: Theme.of(context).colorScheme.primary,
+                                width: 3,
+                              ),
+                              shape: AvatarShape.circle(50),
+                              placeholderColors: const [
+                                Colors.blueGrey,
+                                Colors.teal,
+                              ],
+                              name: Provider.of<CurrentUser>(context)
+                                  .user
+                                  .firstName
+                                  .toTitleCase(),
+                            ),
+                          ],
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: CstmDatePicker(
-                          controller: _dobController,
-                          onDateSelected: (formattedDate) {
-                            setState(() {
-                              _dobController.text = formattedDate;
-                            });
-                          },
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          child: CstmDatePicker(
+                            controller: _dobController,
+                            onDateSelected: (formattedDate) {
+                              setState(() {
+                                _dobController.text = formattedDate;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
+                        Row(
                           children: [
                             Card(
                               color: Theme.of(context).colorScheme.secondary,
@@ -154,202 +216,213 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 10),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Your Job',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: DropdownMenu<Jobs>(
-                          textStyle: const TextStyle(fontSize: 17),
-                          controller: dropdownController,
-                          width: MediaQuery.of(context).size.width / 1.1,
-                          label:
-                              const Text('Select a service you can provide.'),
-                          inputDecorationTheme: InputDecorationTheme(
-                            filled: true,
-                            contentPadding: const EdgeInsets.all(13),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                Provider.of<CurrentUser>(context, listen: false).user.role ==
+                        'worker'
+                    ? Card(
+                        margin: const EdgeInsets.only(top: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Your Job',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
+                                child: DropdownMenu<Jobs>(
+                                  textStyle: const TextStyle(fontSize: 17),
+                                  controller: dropdownController,
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.1,
+                                  label: const Text(
+                                      'Select a service you can provide.'),
+                                  inputDecorationTheme: InputDecorationTheme(
+                                    filled: true,
+                                    contentPadding: const EdgeInsets.all(13),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  onSelected: (Jobs? job) {
+                                    setState(() {
+                                      jobView = job;
+                                      selectedJob = job!.label;
+                                    });
+                                  },
+                                  dropdownMenuEntries:
+                                      Jobs.values.map<DropdownMenuEntry<Jobs>>(
+                                    (Jobs job) {
+                                      return DropdownMenuEntry<Jobs>(
+                                        value: job,
+                                        label: job.label,
+                                        leadingIcon: Icon(job.icon),
+                                      );
+                                    },
+                                  ).toList(),
+                                ),
+                              ),
+                            ],
                           ),
-                          onSelected: (Jobs? job) {
-                            setState(() {
-                              jobView = job;
-                              selectedJob = job!.label;
-                            });
-                            print(selectedJob);
-                          },
-                          dropdownMenuEntries:
-                              Jobs.values.map<DropdownMenuEntry<Jobs>>(
-                            (Jobs job) {
-                              return DropdownMenuEntry<Jobs>(
-                                value: job,
-                                label: job.label,
-                                leadingIcon: Icon(job.icon),
+                        ),
+                      )
+                    : Container(),
+                Card(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Documents',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            File? selectedImage = await uploadImageService
+                                .showImageSourceDialog(context: context);
+                            if (selectedImage != null) {
+                              setState(() {
+                                selectedCitizenship = selectedImage;
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                CstmSnackBar(
+                                  text: 'Cancelled by user!',
+                                  type: 'error',
+                                ),
                               );
-                            },
-                          ).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Documents',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          File? selectedImage = await uploadImageService
-                              .showImageSourceDialog(context: context);
-                          if (selectedImage != null) {
-                            setState(() {
-                              selectedCitizenship = selectedImage;
-                            });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              CstmSnackBar(
-                                text: 'Cancelled by user!',
-                                type: 'error',
-                              ),
-                            );
-                          }
-                        },
-                        child: Card(
-                          color: Theme.of(context).colorScheme.secondary,
-                          margin: const EdgeInsets.only(top: 5),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('Upload your citizenship:'),
-                                SizedBox(
-                                  height: 60,
-                                  width: 60,
-                                  child: selectedCitizenship != null
-                                      ? Image.file(selectedCitizenship!)
-                                      : DottedBorder(
-                                          borderType: BorderType.RRect,
-                                          strokeCap: StrokeCap.square,
-                                          radius: const Radius.circular(5),
-                                          dashPattern: const [2, 0, 5],
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .tertiary,
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons
-                                                  .add_photo_alternate_outlined,
-                                              size: 20,
+                            }
+                          },
+                          child: Card(
+                            color: Theme.of(context).colorScheme.secondary,
+                            margin: const EdgeInsets.only(top: 5),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Upload your citizenship:'),
+                                  SizedBox(
+                                    height: 60,
+                                    width: 60,
+                                    child: selectedCitizenship != null
+                                        ? Image.file(selectedCitizenship!)
+                                        : DottedBorder(
+                                            borderType: BorderType.RRect,
+                                            strokeCap: StrokeCap.square,
+                                            radius: const Radius.circular(5),
+                                            dashPattern: const [2, 0, 5],
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .tertiary,
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons
+                                                    .add_photo_alternate_outlined,
+                                                size: 20,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                ),
-                              ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          File? selectedImage = await uploadImageService
-                              .showImageSourceDialog(context: context);
-                          if (selectedImage != null) {
-                            setState(() {
-                              selectedPaymentQR = selectedImage;
-                            });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              CstmSnackBar(
-                                text: 'Cancelled by user!',
-                                type: 'error',
-                              ),
-                            );
-                          }
-                        },
-                        child: Card(
-                          color: Theme.of(context).colorScheme.secondary,
-                          margin: const EdgeInsets.only(top: 10),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('Upload your payment QR code:'),
-                                SizedBox(
-                                  height: 60,
-                                  width: 60,
-                                  child: selectedPaymentQR != null
-                                      ? Image.file(selectedPaymentQR!)
-                                      : DottedBorder(
-                                          borderType: BorderType.RRect,
-                                          strokeCap: StrokeCap.square,
-                                          radius: const Radius.circular(5),
-                                          dashPattern: const [2, 0, 5],
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .tertiary,
-                                          child: const Center(
-                                            child: Icon(
-                                              Icons
-                                                  .add_photo_alternate_outlined,
-                                              size: 20,
-                                            ),
-                                          ),
+                        Provider.of<CurrentUser>(context, listen: false)
+                                    .user
+                                    .role ==
+                                'worker'
+                            ? GestureDetector(
+                                onTap: () async {
+                                  File? selectedImage = await uploadImageService
+                                      .showImageSourceDialog(context: context);
+                                  if (selectedImage != null) {
+                                    setState(() {
+                                      selectedPaymentQR = selectedImage;
+                                    });
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      CstmSnackBar(
+                                        text: 'Cancelled by user!',
+                                        type: 'error',
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Card(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  margin: const EdgeInsets.only(top: 10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                            'Upload your payment QR code:'),
+                                        SizedBox(
+                                          height: 60,
+                                          width: 60,
+                                          child: selectedPaymentQR != null
+                                              ? Image.file(selectedPaymentQR!)
+                                              : DottedBorder(
+                                                  borderType: BorderType.RRect,
+                                                  strokeCap: StrokeCap.square,
+                                                  radius:
+                                                      const Radius.circular(5),
+                                                  dashPattern: const [2, 0, 5],
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .tertiary,
+                                                  child: const Center(
+                                                    child: Icon(
+                                                      Icons
+                                                          .add_photo_alternate_outlined,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
                                         ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                              )
+                            : Container(),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          uploadKYC();
-        },
-        label: const Text('Submit KYC'),
-        icon: const Icon(
-          Icons.drive_folder_upload,
-        ),
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).colorScheme.tertiary,
-      ),
-    );
+        floatingActionButton: SizedBox(
+          width: 180,
+          child: CstmButton(
+            leadingIcon: const Icon(
+              Icons.drive_folder_upload,
+            ),
+            text: 'Submit KYC',
+            onPressed: () => uploadKYC(),
+          ),
+        ));
   }
 }

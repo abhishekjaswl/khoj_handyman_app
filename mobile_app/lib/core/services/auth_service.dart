@@ -120,9 +120,10 @@ class AuthService {
         UserModel userInfo = UserModel.fromJson(jsonResponse["user"]);
         context.read<CurrentUser>().setUser(userInfo);
 
-        WorkerModel workerInfo = WorkerModel.fromJson(jsonResponse["worker"]);
-        context.read<CurrentUser>().setWorker(workerInfo);
-
+        if (jsonResponse["worker"] != null) {
+          WorkerModel workerInfo = WorkerModel.fromJson(jsonResponse["worker"]);
+          context.read<CurrentUser>().setWorker(workerInfo);
+        }
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -212,6 +213,7 @@ class AuthService {
     required BuildContext context,
   }) async {
     context.read<CurrentUser>().logoutUser();
+    context.read<IsLoadingData>().setIsLoading(false);
     ScaffoldMessenger.of(context).showSnackBar(
       CstmSnackBar(
         text: 'Logged Out.',

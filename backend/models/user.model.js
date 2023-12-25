@@ -41,15 +41,12 @@ const userSchema = new Schema({
     },
     profilePicUrl: {
         type: String,
-        default: ''
     },
     citizenshipUrl: {
         type: String,
-        default: ''
     },
     address: {
         type: String,
-        default: ''
     },
     latitude: {
         type: Number,

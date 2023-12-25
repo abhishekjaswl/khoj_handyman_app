@@ -12,31 +12,70 @@ import '../../utils/config/config.dart';
 import '../models/user_model.dart';
 import '../models/worker_model.dart';
 import '../providers/currentuser_provider.dart';
+import '../providers/loading_provider.dart';
 
 class UserService {
   Future<void> uploadKYC({
     required BuildContext context,
     required String dob,
     required String gender,
+    required File profilePic,
     required File citizenship,
-    required File? paymentQr,
-    required String? job,
+    File? paymentQr,
+    String? job,
   }) async {
-    if (Provider.of<CurrentUser>(context, listen: false)
-        .user
-        .address!
-        .isEmpty) {
+    context.read<IsLoadingData>().setIsLoading(true);
+    if (Provider.of<CurrentUser>(context, listen: false).user.address == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         CstmSnackBar(
           text: 'Please set your location!',
           type: 'error',
         ),
       );
+      context.read<IsLoadingData>().setIsLoading(false);
       return;
     } else {
       String id = Provider.of<CurrentUser>(context, listen: false).user.id;
 
       final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
+
+      final profilePicResult = await cloudinary.uploadFile(
+        CloudinaryFile.fromFile(
+          profilePic.path,
+          folder: 'users/$id/profilePicture',
+        ),
+      );
+
+      final profileRegBody = {
+        'id': id,
+        'picUrl': profilePicResult.secureUrl,
+        'purpose': 'Profile Picture',
+      };
+
+      try {
+        final response = await http.post(
+          Uri.parse(uploadPictureApi),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(profileRegBody),
+        );
+
+        if (response.statusCode != 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            CstmSnackBar(
+              text: response.body,
+              type: 'error',
+            ),
+          );
+          return;
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: e.toString(),
+            type: 'error',
+          ),
+        );
+      }
 
       final citizenResult = await cloudinary.uploadFile(
         CloudinaryFile.fromFile(
@@ -57,7 +96,6 @@ class UserService {
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(citizenRegBody),
         );
-        print(response.statusCode);
 
         if (response.statusCode != 200) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -153,8 +191,8 @@ class UserService {
                 WorkerModel.fromJson(jsonResponse["worker"]);
             context.read<CurrentUser>().setWorker(workerInfo);
           }
+          Navigator.of(context).pop();
         } else {
-          print(response.body);
           ScaffoldMessenger.of(context).showSnackBar(
             CstmSnackBar(
               text: response.body,
@@ -169,6 +207,8 @@ class UserService {
             type: 'error',
           ),
         );
+      } finally {
+        context.read<IsLoadingData>().setIsLoading(false);
       }
     }
   }

@@ -10,7 +10,6 @@ const workerSchema = new Schema({
     },
     paymentQrUrl: {
         type: String,
-        default: ''
     },
     status: {
         type: String,
