@@ -19,7 +19,9 @@ exports.login = async (req, res, next) => {
 
         const worker = await WorkerModel.findOne({ _id: user._id });
 
-        res.status(200).json({ user, worker });
+        const userDetails = { ...user.toObject(), ...worker ? worker.toObject() : {} };
+
+        res.status(200).json(userDetails);
 
     } catch (error) {
         return next(error);
@@ -41,7 +43,9 @@ exports.register = async (req, res, next) => {
             const workerInstance = new WorkerModel({ _id: user._id });
             worker = await workerInstance.save();
         }
-        res.status(200).json({ user, worker });
+        const userDetails = { ...user.toObject(), ...worker ? worker.toObject() : {} };
+
+        res.status(200).json(userDetails);
     } catch (error) {
         return next(error);
     }

@@ -13,6 +13,9 @@ class UserModel {
   double? latitude;
   double? longitude;
   String? address;
+  String? job;
+  String? availability;
+  String? paymentQrUrl;
 
   UserModel(
     this.id,
@@ -29,6 +32,9 @@ class UserModel {
     this.latitude,
     this.longitude,
     this.address,
+    this.job,
+    this.availability,
+    this.paymentQrUrl,
   );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +53,9 @@ class UserModel {
       (json['latitude']),
       (json['longitude']),
       (json['address']),
+      (json['job']),
+      (json['availability']),
+      (json['paymentQrUrl']),
     );
   }
 
@@ -65,5 +74,8 @@ class UserModel {
         'latitude': latitude,
         'longitude': longitude,
         'address': address,
+        'job': job,
+        'availability': availability,
+        'paymentQrUrl': paymentQrUrl,
       };
 }

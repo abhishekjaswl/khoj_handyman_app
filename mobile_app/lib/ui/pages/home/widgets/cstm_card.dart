@@ -20,7 +20,10 @@ class CstmCard extends StatelessWidget {
         child: Row(
           children: [
             Avatar(
-              sources: [NetworkSource(user.profilePicUrl!)],
+              sources: [
+                if (user.profilePicUrl != null)
+                  NetworkSource(user.profilePicUrl!)
+              ],
               shape: AvatarShape.rectangle(
                 80,
                 80,
@@ -52,6 +55,9 @@ class CstmCard extends StatelessWidget {
                   style: const TextStyle(fontSize: 16),
                 ),
                 Text(user.email),
+                user.availability != null
+                    ? Text(user.availability!)
+                    : Container(),
               ],
             ),
           ],

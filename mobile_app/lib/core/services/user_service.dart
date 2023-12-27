@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import '../../ui/widgets/cstm_snackbar.dart';
 import '../../utils/config/config.dart';
 import '../models/user_model.dart';
-import '../models/worker_model.dart';
 import '../providers/currentuser_provider.dart';
 import '../providers/loading_provider.dart';
 
@@ -183,14 +182,9 @@ class UserService {
               type: 'success',
             ),
           );
-          UserModel userInfo = UserModel.fromJson(jsonResponse["user"]);
+          UserModel userInfo = UserModel.fromJson(jsonResponse);
           context.read<CurrentUser>().setUser(userInfo);
 
-          if (jsonResponse["worker"] != null) {
-            WorkerModel workerInfo =
-                WorkerModel.fromJson(jsonResponse["worker"]);
-            context.read<CurrentUser>().setWorker(workerInfo);
-          }
           Navigator.of(context).pop();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

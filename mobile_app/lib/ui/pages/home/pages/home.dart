@@ -60,8 +60,7 @@ class _HomePageState extends State<HomePage> {
             stretchTrigger: () {
               return Future.delayed(const Duration(seconds: 1), () {
                 setState(() {
-                  _workerListFuture =
-                      _getWorkers(); // Update the future to trigger a rebuild
+                  _workerListFuture = _getWorkers();
                 });
               });
             },

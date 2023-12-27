@@ -70,6 +70,9 @@ class _UploadDocumentsState extends State<UploadDocuments> {
           gender: selectedGender.label);
     } else if (Provider.of<CurrentUser>(context, listen: false).user.role ==
             'worker' &&
+        selectedCitizenship != null &&
+        selectedImage != null &&
+        _dobController.text.isNotEmpty &&
         selectedPaymentQR != null &&
         selectedJob != null) {
       await userService.uploadKYC(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/providers/theme_provider.dart';
+import 'package:mobile_app/ui/pages/admin/pages/verification/verification_requests.dart';
 import 'package:mobile_app/ui/pages/profile/profile.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
@@ -84,9 +85,9 @@ class _CstmDrawerState extends State<CstmDrawer> {
             onTap: () => redirectFunc(const ProfilePage()),
           ),
           ListTileItem(
-            leading: Icons.abc,
-            title: 'Unknown',
-            onTap: () {},
+            leading: Icons.new_releases_outlined,
+            title: 'Verification Requests',
+            onTap: () => redirectFunc(const VerificationRequests()),
           ),
           ListTileItem(
             leading: Icons.abc,

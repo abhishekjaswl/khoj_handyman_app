@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../../core/providers/currentuser_provider.dart';
 import '../../../core/services/uploadimage_service.dart';
 import '../../widgets/cstm_msgborder.dart';
+import '../../widgets/userinfo_tile.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -140,17 +141,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         UserInfoItem(
                           icon: Icons.work_outline,
                           label: 'Job',
-                          value:
-                              (Provider.of<CurrentUser>(context).worker.job ??
-                                      'N/a')
-                                  .toTitleCase(),
+                          value: (Provider.of<CurrentUser>(context).user.job ??
+                                  'N/a')
+                              .toTitleCase(),
                         ),
                         ListTile(
                           leading: Icon(
                             Icons.circle_outlined,
                             color: Provider.of<CurrentUser>(context)
-                                        .worker
-                                        .status ==
+                                        .user
+                                        .availability ==
                                     'available'
                                 ? Colors.greenAccent
                                 : Colors.redAccent,
@@ -160,8 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(fontWeight: FontWeight.w700),
                           ),
                           subtitle: Text(Provider.of<CurrentUser>(context)
-                              .worker
-                              .status
+                              .user
+                              .availability!
                               .toTitleCase()),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 20),
@@ -263,35 +263,6 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class UserInfoItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const UserInfoItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(
-        icon,
-        color: Theme.of(context).colorScheme.tertiary,
-      ),
-      title: Text(
-        label,
-        style: const TextStyle(fontWeight: FontWeight.w700),
-      ),
-      subtitle: Text(value),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
     );
   }
 }
