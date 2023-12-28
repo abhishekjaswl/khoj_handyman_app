@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/services/admin_service.dart';
-import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
+import 'package:mobile_app/ui/pages/user/widgets/cstm_card.dart';
 import 'package:mobile_app/ui/pages/profile/user_details.dart';
 
 class VerificationRequests extends StatefulWidget {

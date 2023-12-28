@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -194,7 +195,6 @@ class UserService {
           );
         }
       } catch (e) {
-        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(
             text: e.toString(),
@@ -204,6 +204,44 @@ class UserService {
       } finally {
         context.read<IsLoadingData>().setIsLoading(false);
       }
+    }
+  }
+
+  static Future<void> updateUserAvailability({
+    required BuildContext context,
+    required String id,
+    required String availability,
+  }) async {
+    try {
+      var response = await http.patch(
+        Uri.parse('$updateAvailability/$id/$availability'),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 20));
+
+      if (response.statusCode != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: response.body,
+            type: 'success',
+          ),
+        );
+      }
+    } on TimeoutException catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: 'Took too long to respond.',
+          type: 'error',
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: e.toString(),
+          type: 'error',
+        ),
+      );
+    } finally {
+      Navigator.of(context).pop();
     }
   }
 }

@@ -2,11 +2,14 @@ import 'package:avatars/avatars.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app/core/models/user_model.dart';
+import 'package:mobile_app/core/services/user_service.dart';
 import 'package:mobile_app/ui/pages/profile/view_documents.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/currentuser_provider.dart';
+import '../../../core/services/booking_service.dart';
+import '../../widgets/cstm_button.dart';
 import '../../widgets/cstm_msgborder.dart';
 
 class UserDetails extends StatefulWidget {
@@ -25,12 +28,14 @@ class UserDetails extends StatefulWidget {
 class _UserDetailsState extends State<UserDetails> {
   late UserModel _user;
   late String _title;
+  late String _availability;
 
   @override
   void initState() {
     super.initState();
     _user = widget.user;
     _title = widget.title;
+    _availability = widget.user.availability!;
   }
 
   @override
@@ -147,7 +152,7 @@ class _UserDetailsState extends State<UserDetails> {
                           ListTile(
                             leading: Icon(
                               Icons.circle_outlined,
-                              color: _user.availability == 'available'
+                              color: _availability == 'available'
                                   ? Colors.greenAccent
                                   : Colors.redAccent,
                             ),
@@ -155,7 +160,7 @@ class _UserDetailsState extends State<UserDetails> {
                               'Status',
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
-                            subtitle: Text(_user.availability!.toTitleCase()),
+                            subtitle: Text(_availability.toTitleCase()),
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 20),
                             onTap: () {
@@ -189,7 +194,17 @@ class _UserDetailsState extends State<UserDetails> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 30),
-                                                onTap: () => {},
+                                                onTap: () => {
+                                                  UserService
+                                                      .updateUserAvailability(
+                                                    context: context,
+                                                    id: _user.id,
+                                                    availability: 'available',
+                                                  ),
+                                                  setState(() {
+                                                    _availability = 'available';
+                                                  })
+                                                },
                                               ),
                                               ListTile(
                                                 leading: const Icon(
@@ -207,7 +222,18 @@ class _UserDetailsState extends State<UserDetails> {
                                                 contentPadding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 30),
-                                                onTap: () => {},
+                                                onTap: () => {
+                                                  UserService
+                                                      .updateUserAvailability(
+                                                    context: context,
+                                                    id: _user.id,
+                                                    availability: 'unavailable',
+                                                  ),
+                                                  setState(() {
+                                                    _availability =
+                                                        'unavailable';
+                                                  })
+                                                },
                                               ),
                                             ],
                                           ),
@@ -282,62 +308,91 @@ class _UserDetailsState extends State<UserDetails> {
                       ),
                     )
                   : Container(),
-              TextFormField(
-                decoration: InputDecoration(
-                  suffixIcon: const Icon(Icons.calendar_today),
-                  labelText: "Booking Date and Time",
-                  labelStyle: const TextStyle(fontSize: 15),
-                  filled: true,
-                  focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Theme.of(context).colorScheme.tertiary)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  contentPadding: const EdgeInsets.all(14),
-                ),
-                readOnly: true,
-                //set it true, so that user will not able to edit text
-                onTap: () async {
-                  showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2101),
-                  ).then((selectedDate) {
-                    // After selecting the date, display the time picker.
-                    if (selectedDate != null) {
-                      showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.now(),
-                      ).then((selectedTime) {
-                        // Handle the selected date and time here.
-                        if (selectedTime != null) {
-                          DateTime selectedDateTime = DateTime(
-                            selectedDate.year,
-                            selectedDate.month,
-                            selectedDate.day,
-                            selectedTime.hour,
-                            selectedTime.minute,
-                          );
-                          // Format the DateTime using the desired format
-                          String formattedDateTime =
-                              DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ")
-                                  .format(selectedDateTime);
-                          print(
-                              formattedDateTime); // You can use the selectedDateTime as needed.
-                        }
-                      });
-                    }
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter Date of birth';
-                  }
-                  return null;
-                },
-              ),
+              _title == 'Booking'
+                  ? Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              decoration: InputDecoration(
+                                suffixIcon: const Icon(Icons.calendar_today),
+                                labelText: "Booking Date and Time",
+                                labelStyle: const TextStyle(fontSize: 15),
+                                filled: true,
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .tertiary)),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                contentPadding: const EdgeInsets.all(14),
+                              ),
+                              readOnly: true,
+                              //set it true, so that user will not able to edit text
+                              onTap: () async {
+                                showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2000),
+                                  lastDate: DateTime(2101),
+                                ).then((selectedDate) {
+                                  // After selecting the date, display the time picker.
+                                  if (selectedDate != null) {
+                                    showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    ).then((selectedTime) {
+                                      // Handle the selected date and time here.
+                                      if (selectedTime != null) {
+                                        DateTime selectedDateTime = DateTime(
+                                          selectedDate.year,
+                                          selectedDate.month,
+                                          selectedDate.day,
+                                          selectedTime.hour,
+                                          selectedTime.minute,
+                                        );
+                                        // Format the DateTime using the desired format
+                                        String formattedDateTime = DateFormat(
+                                                "yyyy-MM-ddTHH:mm:ss.SSSZ")
+                                            .format(selectedDateTime);
+                                        print(
+                                            formattedDateTime); // You can use the selectedDateTime as needed.
+                                      }
+                                    });
+                                  }
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter date and time of booking';
+                                }
+                                return null;
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: CstmButton(
+                                btnColor: Colors.green,
+                                leadingIcon: const Icon(Icons.tour_outlined),
+                                text: 'Book Now',
+                                onPressed: () {
+                                  BookingService.updateBookingRequests(
+                                    context: context,
+                                    id: _user.id,
+                                    action: 'accept',
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

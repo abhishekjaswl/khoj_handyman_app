@@ -6,10 +6,15 @@ const login = "${url}auth/login";
 const register = "${url}auth/register";
 const checkEmailApi = "${url}auth/checkEmail";
 const getRegisOTP = "${url}auth/getRegisOTP";
+const verifyOTPApi = "${url}auth/verifyOTP";
+
 const uploadPictureApi = "${url}user/uploadPicture";
 const uploadKYCApi = "${url}user/uploadKYC";
+const updateAvailability = "${url}user/updateAvailability";
+
 const verWorkerList = "${url}booking/verWorkerList";
-const verifyOTPApi = "${url}auth/verifyOTP";
+const getBookingRequestsApi = "${url}booking/getBookingRequests";
+const updateBookingRequestApi = "${url}booking/updateBookingRequest";
 
 const allUsers = "${url}admin/allUsers";
 const userList = "${url}admin/userList";

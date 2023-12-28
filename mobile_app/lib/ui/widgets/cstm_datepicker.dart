@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CstmDatePicker extends StatelessWidget {
   final TextEditingController? controller;
@@ -35,13 +34,9 @@ class CstmDatePicker extends StatelessWidget {
             context: context,
             initialDate: DateTime(2002),
             firstDate: DateTime(1980),
-            //DateTime.now() - not to allow to choose before today.
             lastDate: DateTime(2015));
 
         if (pickedDate != null) {
-          //pickedDate output format => 2021-03-10 00:00:00.000
-          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-          //formatted date output using intl package =>  2021-03-16
           onDateSelected!(pickedDate);
         } else {}
       },

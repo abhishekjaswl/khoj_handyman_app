@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/providers/currentuser_provider.dart';
 import 'package:mobile_app/core/services/admin_service.dart';
-import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
 import 'package:mobile_app/ui/widgets/cstm_appbar.dart';
 import 'package:mobile_app/ui/widgets/cstm_drawer.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../profile/user_details.dart';
+import '../user/widgets/cstm_card.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -25,7 +25,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
     _userListFuture = _getUsers();
   }
 
-  // returns the list of verified workers
   Future<List<UserModel>> _getUsers() async {
     try {
       return await AdminService.getAllUsers();

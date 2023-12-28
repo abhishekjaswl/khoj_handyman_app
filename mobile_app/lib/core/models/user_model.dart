@@ -16,7 +16,6 @@ class UserModel {
   String? job;
   String? availability;
   String? paymentQrUrl;
-  List<Booking> bookingRequests = const [];
 
   UserModel({
     required this.id,
@@ -36,7 +35,6 @@ class UserModel {
     this.job,
     this.availability,
     this.paymentQrUrl,
-    this.bookingRequests = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -58,10 +56,6 @@ class UserModel {
       job: json['job'],
       availability: json['availability'],
       paymentQrUrl: json['paymentQrUrl'],
-      bookingRequests: (json['bookingRequests'] as List<dynamic>?)
-              ?.map((x) => Booking.fromJson(x))
-              .toList() ??
-          [],
     );
   }
 
@@ -85,8 +79,6 @@ class UserModel {
         'job': job,
         'availability': availability,
         'paymentQrUrl': paymentQrUrl,
-        'bookingRequests':
-            List<dynamic>.from(bookingRequests.map((x) => x.toJson())),
       };
 
   UserModel.empty()
@@ -106,8 +98,7 @@ class UserModel {
         address = '',
         job = '',
         availability = '',
-        paymentQrUrl = '',
-        bookingRequests = [];
+        paymentQrUrl = '';
 
   void updateAddress(
       double newLatitude, double newLongitude, String newAddress) {
@@ -117,25 +108,25 @@ class UserModel {
   }
 }
 
-class Booking {
+class BookingModel {
   String id;
-  String userId;
+  UserModel user;
   DateTime dateTime;
 
-  Booking({
+  BookingModel({
     required this.id,
-    required this.userId,
+    required this.user,
     required this.dateTime,
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) => Booking(
+  factory BookingModel.fromJson(Map<String, dynamic> json) => BookingModel(
         id: json['_id'],
-        userId: json['userId'],
+        user: UserModel.fromJson(json['user']),
         dateTime: DateTime.parse(json['dateTime']),
       );
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
+        'user': user.toJson(),
         'dateTime': dateTime.toUtc().toIso8601String(),
       };
 }

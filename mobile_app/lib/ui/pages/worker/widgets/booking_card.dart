@@ -1,20 +1,21 @@
 import 'package:avatars/avatars.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 
-class CstmCard extends StatelessWidget {
-  final UserModel user;
-
-  const CstmCard({
+class BookingCard extends StatelessWidget {
+  final BookingModel booking;
+  const BookingCard({
     super.key,
-    required this.user,
+    required this.booking,
   });
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = booking.user;
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+      margin: const EdgeInsets.only(top: 5),
       child: Padding(
         padding: const EdgeInsets.all(0),
         child: Row(
@@ -54,10 +55,10 @@ class CstmCard extends StatelessWidget {
                   '${user.firstName} ${user.lastName}',
                   style: const TextStyle(fontSize: 16),
                 ),
-                Text(user.email),
-                user.availability != null
-                    ? Text(user.availability!)
-                    : Container(),
+                Text(user.address!),
+                Text(
+                  DateFormat('yyyy-MM-dd | hh:mm a').format(booking.dateTime),
+                ),
               ],
             ),
           ],

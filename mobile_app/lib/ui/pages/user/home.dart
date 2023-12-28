@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
-import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
+import 'package:mobile_app/ui/pages/user/widgets/cstm_card.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/providers/currentuser_provider.dart';
-import '../../../../core/services/auth_service.dart';
-import '../../../../core/services/booking_service.dart';
-import '../../../widgets/cstm_appbar.dart';
-import '../../../widgets/cstm_drawer.dart';
-import '../../profile/user_details.dart';
+import '../../../core/providers/currentuser_provider.dart';
+import '../../../core/services/auth_service.dart';
+import '../../../core/services/booking_service.dart';
+import '../../widgets/cstm_appbar.dart';
+import '../../widgets/cstm_drawer.dart';
+import '../profile/user_details.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -180,67 +180,66 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: FutureBuilder<List<UserModel>>(
-              future: _workerListFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
+          SliverFillRemaining(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: FutureBuilder<List<UserModel>>(
+                future: _workerListFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
                       child: CircularProgressIndicator(
                         strokeWidth: 4,
                       ),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Center(
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
                       child: Text(
                         '${snapshot.error}',
                       ),
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
                       child: Text(
                         'No Handymen Available!',
                         style: TextStyle(fontSize: 18),
                       ),
-                    ),
-                  );
-                } else {
-                  final userList = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: userList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      UserModel user = userList[index];
-                      return Column(
-                        children: [
-                          const Text('Discover Workers'),
-                          GestureDetector(
-                            onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => UserDetails(
-                                          user: user,
-                                          title: 'Booking',
-                                        ))),
-                            child: CstmCard(
-                              user: user,
+                    );
+                  } else {
+                    final userList = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: userList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        UserModel user = userList[index];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Discover Workers',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w700),
                             ),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
+                            GestureDetector(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => UserDetails(
+                                            user: user,
+                                            title: 'Booking',
+                                          ))),
+                              child: CstmCard(
+                                user: user,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ],

@@ -42,10 +42,9 @@ exports.updateAvailability = async (req, res, next) => {
     try {
         const id = req.params.id;
         const availability = req.params.availability;
-        const worker = await WorkerModel.findOneAndUpdate({ _id: id }, { availability }, { new: true, runValidators: true });
-        res.status(200).json({  worker });
+        await WorkerModel.findOneAndUpdate({ _id: id }, { availability }, { new: true, runValidators: true });
+        res.status(200).json('User availability updated');
     } catch (error) {
-        console.log(error);
         return next(error);
     }
 }

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/admin/home.dart';
-import 'package:mobile_app/ui/pages/home/pages/worker_home.dart';
+import 'package:mobile_app/ui/pages/worker/home.dart';
 import 'package:mobile_app/ui/pages/kycForm/kyc.dart';
 import 'package:provider/provider.dart';
 
 import 'core/providers/currentuser_provider.dart';
 import 'core/providers/loading_provider.dart';
-import 'ui/pages/home/pages/home.dart';
+import 'ui/pages/user/home.dart';
 import 'ui/pages/loginregister/login.dart';
 import 'ui/pages/loginregister/register.dart';
 

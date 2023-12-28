@@ -65,7 +65,6 @@ class AuthService {
         ),
       );
     } catch (e) {
-      print(e);
       ScaffoldMessenger.of(context).showSnackBar(
         CstmSnackBar(
           text: e.toString(),
