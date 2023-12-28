@@ -16,7 +16,7 @@ import '../providers/loading_provider.dart';
 class UserService {
   Future<void> uploadKYC({
     required BuildContext context,
-    required String dob,
+    required DateTime dob,
     required String gender,
     required File profilePic,
     required File citizenship,
@@ -35,7 +35,6 @@ class UserService {
       return;
     } else {
       String id = Provider.of<CurrentUser>(context, listen: false).user.id;
-
       final cloudinary = CloudinaryPublic('bookabahun', 'ch37wxpt');
 
       final profilePicResult = await cloudinary.uploadFile(
@@ -157,7 +156,7 @@ class UserService {
       try {
         final regBody = {
           'id': id,
-          'dob': dob,
+          'dob': dob.toIso8601String(),
           'gender': gender,
           'job': job,
           'latitude':
@@ -195,6 +194,7 @@ class UserService {
           );
         }
       } catch (e) {
+        print(e);
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(
             text: e.toString(),

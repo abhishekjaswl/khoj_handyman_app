@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:avatars/avatars.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile_app/core/services/uploadimage_service.dart';
 import 'package:mobile_app/ui/widgets/cstm_button.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
@@ -54,6 +55,7 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   Gender selectedGender = Gender.male;
   Jobs? jobView;
   String? selectedJob;
+  DateTime? selectedDate;
   File? selectedCitizenship;
   File? selectedPaymentQR;
 
@@ -61,10 +63,10 @@ class _UploadDocumentsState extends State<UploadDocuments> {
     if (Provider.of<CurrentUser>(context, listen: false).user.role == 'user' &&
         selectedCitizenship != null &&
         selectedImage != null &&
-        _dobController.text.isNotEmpty) {
+        selectedDate != null) {
       await userService.uploadKYC(
           context: context,
-          dob: _dobController.text.trim(),
+          dob: selectedDate!,
           profilePic: selectedImage!,
           citizenship: selectedCitizenship!,
           gender: selectedGender.label);
@@ -72,12 +74,12 @@ class _UploadDocumentsState extends State<UploadDocuments> {
             'worker' &&
         selectedCitizenship != null &&
         selectedImage != null &&
-        _dobController.text.isNotEmpty &&
+        selectedDate != null &&
         selectedPaymentQR != null &&
         selectedJob != null) {
       await userService.uploadKYC(
         context: context,
-        dob: _dobController.text.trim(),
+        dob: selectedDate!,
         profilePic: selectedImage!,
         citizenship: selectedCitizenship!,
         gender: selectedGender.label,
@@ -166,7 +168,9 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                             controller: _dobController,
                             onDateSelected: (formattedDate) {
                               setState(() {
-                                _dobController.text = formattedDate;
+                                selectedDate = formattedDate;
+                                _dobController.text = DateFormat('yyyy-MM-dd')
+                                    .format(formattedDate);
                               });
                             },
                           ),

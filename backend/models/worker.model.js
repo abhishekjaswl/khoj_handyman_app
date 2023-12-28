@@ -3,6 +3,17 @@ const db = require('../config/db');
 
 const { Schema } = mongoose;
 
+const bookingSchema = new Schema({
+    userId: {
+        type: String,
+        required: true
+    },
+    dateTime: {
+        type: Date,
+        required: true
+    }
+});
+
 const workerSchema = new Schema({
     job: {
         type: String,
@@ -16,6 +27,8 @@ const workerSchema = new Schema({
         enum: ['available', 'unavailable'],
         default: 'available'
     },
+    bookingRequests: [bookingSchema],
+    bookingHistory: [bookingSchema]
 });
 
 const WorkerModel = db.model('worker', workerSchema);

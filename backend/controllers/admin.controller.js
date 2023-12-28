@@ -68,3 +68,16 @@ exports.pendingList = async (req, res, next) => {
         return next(error);
     }
 }
+
+exports.updateUserStatus = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const status = req.params.status;
+
+        await UserModel.findOneAndUpdate({ _id: id }, { status }, { new: true, runValidators: true });
+
+        res.status(200).json('User ' + status);
+    } catch (error) {
+        return next(error);
+    }
+}

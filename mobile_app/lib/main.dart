@@ -3,7 +3,6 @@ import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/admin/home.dart';
 import 'package:mobile_app/ui/pages/home/pages/worker_home.dart';
 import 'package:mobile_app/ui/pages/kycForm/kyc.dart';
-import 'package:mobile_app/ui/pages/profile/profile.dart';
 import 'package:provider/provider.dart';
 
 import 'core/providers/currentuser_provider.dart';
@@ -58,7 +57,6 @@ class MyApp extends StatelessWidget {
                 return const LoginPage();
               }
             },
-            '/profile': (context) => const ProfilePage(),
             '/kyc': (context) => const KYCPage(),
           },
         ),

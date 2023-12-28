@@ -15,3 +15,4 @@ const allUsers = "${url}admin/allUsers";
 const userList = "${url}admin/userList";
 const workerList = "${url}admin/workerList";
 const pendingList = "${url}admin/pendingList";
+const updateStatus = "${url}admin/updateStatus";

@@ -14,7 +14,7 @@ class CstmCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
       child: Padding(
         padding: const EdgeInsets.all(0),
         child: Row(

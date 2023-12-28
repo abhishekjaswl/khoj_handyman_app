@@ -24,9 +24,7 @@ class CstmButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: btnColor ?? Theme.of(context).colorScheme.tertiary,
-        padding: const EdgeInsets.symmetric(
-          vertical: 15,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -37,6 +35,7 @@ class CstmButton extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(

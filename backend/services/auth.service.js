@@ -9,7 +9,6 @@ class AuthService {
         try {
             const createUser = new UserModel({ firstName, lastName, role, email, phone, password });
             return await createUser.save();
-
         } catch (error) {
             throw error;
         }

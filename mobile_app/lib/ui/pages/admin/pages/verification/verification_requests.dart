@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/services/admin_service.dart';
-import 'package:mobile_app/ui/pages/admin/pages/verification/userdetails.dart';
 import 'package:mobile_app/ui/pages/home/widgets/cstm_card.dart';
+import 'package:mobile_app/ui/pages/profile/user_details.dart';
 
 class VerificationRequests extends StatefulWidget {
   const VerificationRequests({super.key});
@@ -69,7 +69,7 @@ class _VerificationRequestsState extends State<VerificationRequests> {
                     height: MediaQuery.of(context).size.height,
                     child: const Center(
                       child: Text(
-                        'Oh no! There are no users!.',
+                        'There are no pending verification requests!.',
                         style: TextStyle(fontSize: 18),
                         textAlign: TextAlign.center,
                       ),
@@ -87,7 +87,10 @@ class _VerificationRequestsState extends State<VerificationRequests> {
                         onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => UserDetails(user: user))),
+                                builder: (context) => UserDetails(
+                                      user: user,
+                                      title: 'User Details',
+                                    ))),
                         child: CstmCard(
                           user: user,
                         ),

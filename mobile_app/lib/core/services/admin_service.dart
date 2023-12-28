@@ -1,9 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app/core/providers/loading_provider.dart';
+import 'package:mobile_app/ui/widgets/cstm_snackbar.dart';
 import 'package:mobile_app/utils/config/config.dart';
+import 'package:provider/provider.dart';
 
 class AdminService {
   static Future<List<UserModel>> getAllUsers() async {
@@ -87,6 +94,53 @@ class AdminService {
       } else {
         throw Exception('Failed to load users: $e');
       }
+    }
+  }
+
+  static Future<void> updateUserStatus({
+    required BuildContext context,
+    required String id,
+    required String status,
+  }) async {
+    context.read<IsLoadingData>().setIsLoading(true);
+    try {
+      var response = await http.patch(
+        Uri.parse('$updateStatus/$id/$status'),
+        headers: {'Content-Type': 'application/json'},
+      ).timeout(const Duration(seconds: 20));
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: response.body,
+            type: 'success',
+          ),
+        );
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: response.body,
+            type: 'error',
+          ),
+        );
+      }
+    } on TimeoutException catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: 'Took too long to respond.',
+          type: 'error',
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: e.toString(),
+          type: 'error',
+        ),
+      );
+    } finally {
+      context.read<IsLoadingData>().setIsLoading(false);
     }
   }
 }

@@ -16,7 +16,7 @@ class MessageBorder extends ShapeBorder {
     rect = Rect.fromPoints(rect.topLeft, rect.bottomRight);
     return Path()
       ..addRRect(RRect.fromRectAndRadius(rect, const Radius.circular(6)))
-      ..moveTo(rect.topRight.dx - 60, rect.topCenter.dy)
+      ..moveTo(rect.topLeft.dx + 30, rect.topCenter.dy)
       ..relativeLineTo(10, -10)
       ..relativeLineTo(20, 20)
       ..close();

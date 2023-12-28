@@ -8,6 +8,8 @@ import 'package:mobile_app/ui/widgets/cstm_drawer.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
+import '../profile/user_details.dart';
+
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
 
@@ -120,8 +122,17 @@ class _AdminHomePageState extends State<AdminHomePage> {
                     itemCount: userList.length,
                     itemBuilder: (BuildContext context, int index) {
                       UserModel user = userList[index];
-                      return CstmCard(
-                        user: user,
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => UserDetails(
+                                      user: user,
+                                      title: 'User Details',
+                                    ))),
+                        child: CstmCard(
+                          user: user,
+                        ),
                       );
                     },
                   );

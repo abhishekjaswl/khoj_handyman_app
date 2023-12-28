@@ -11,7 +11,10 @@ ThemeData darkTheme = ThemeData(
   progressIndicatorTheme: const ProgressIndicatorThemeData(color: Colors.teal),
   drawerTheme: const DrawerThemeData(backgroundColor: Colors.black),
   appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
-  cardTheme: CardTheme(color: Colors.grey[900]!),
+  cardTheme: CardTheme(
+      color: Colors.grey[900]!,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)))),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     backgroundColor: Colors.white,
     foregroundColor: Colors.black,

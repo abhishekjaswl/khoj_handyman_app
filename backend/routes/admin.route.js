@@ -6,5 +6,6 @@ router.get('/allUsers', AdminController.allUsers);
 router.get('/userList', AdminController.userList);
 router.get('/workerList', AdminController.workerList);
 router.get('/pendingList', AdminController.pendingList);
+router.patch('/updateStatus/:id/:status', AdminController.updateUserStatus);
 
 module.exports = router;

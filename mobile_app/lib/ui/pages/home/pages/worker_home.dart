@@ -115,15 +115,17 @@ class _WorkerHomePageState extends State<WorkerHomePage> {
                     ),
                   );
                 } else {
-                  final userList = snapshot.data!;
+                  final userList =
+                      Provider.of<CurrentUser>(context).user.bookingRequests;
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: userList.length,
                     itemBuilder: (BuildContext context, int index) {
-                      UserModel user = userList[index];
-                      return CstmCard(
-                        user: user,
+                      Booking user = userList[index];
+                      return Card(
+                        child: Column(
+                            children: [Text(user.dateTime.toIso8601String())]),
                       );
                     },
                   );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/admin/pages/verification/verification_requests.dart';
-import 'package:mobile_app/ui/pages/profile/profile.dart';
+import 'package:mobile_app/ui/pages/profile/user_details.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:avatars/avatars.dart';
@@ -82,7 +82,10 @@ class _CstmDrawerState extends State<CstmDrawer> {
           ListTileItem(
             leading: Icons.person_4_outlined,
             title: 'Profile',
-            onTap: () => redirectFunc(const ProfilePage()),
+            onTap: () => redirectFunc(UserDetails(
+              user: Provider.of<CurrentUser>(context, listen: false).user,
+              title: 'Profile',
+            )),
           ),
           ListTileItem(
             leading: Icons.new_releases_outlined,
@@ -100,7 +103,6 @@ class _CstmDrawerState extends State<CstmDrawer> {
             onTap: () {},
           ),
           const Spacer(),
-          const Divider(height: 0),
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 30),
             trailing: Icon(
@@ -115,7 +117,9 @@ class _CstmDrawerState extends State<CstmDrawer> {
               context.read<ThemeProvider>().toggleTheme();
             },
           ),
-          const Divider(height: 0),
+          const Divider(
+            height: 0,
+          ),
           ListTile(
             textColor: Colors.red,
             iconColor: Colors.red,
@@ -159,28 +163,7 @@ class ListTileItem extends StatelessWidget {
           ),
           onTap: onTap,
         ),
-        const Divider(
-          height: 0,
-          thickness: 0.9,
-        ),
       ],
     );
   }
 }
-
-// class ListTileItem extends StatelessWidget {
-//   ListTileItem({
-//     super.key,
-//     required IconData leading,
-//     required String title,
-//     required Function()? onTap,
-//   }) : super(
-//           leading: Icon(leading),
-//           title: Text(
-//             title,
-//             style: const TextStyle(fontSize: 15),
-//           ),
-//           onTap: onTap,
-//         );
-//         const Divider(height: 0),
-// }

@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class CstmDatePicker extends StatelessWidget {
   final TextEditingController? controller;
-  final Function(String)? onDateSelected;
+  final Function(DateTime)? onDateSelected;
 
   const CstmDatePicker({
     super.key,
@@ -42,7 +42,7 @@ class CstmDatePicker extends StatelessWidget {
           //pickedDate output format => 2021-03-10 00:00:00.000
           String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
           //formatted date output using intl package =>  2021-03-16
-          onDateSelected!(formattedDate);
+          onDateSelected!(pickedDate);
         } else {}
       },
       validator: (value) {

@@ -2,7 +2,7 @@ class UserModel {
   String id;
   String firstName;
   String lastName;
-  String? dob;
+  DateTime? dob;
   String email;
   int phone;
   String role;
@@ -16,17 +16,18 @@ class UserModel {
   String? job;
   String? availability;
   String? paymentQrUrl;
+  List<Booking> bookingRequests = const [];
 
-  UserModel(
-    this.id,
-    this.firstName,
-    this.lastName,
+  UserModel({
+    required this.id,
+    required this.firstName,
+    required this.lastName,
     this.dob,
-    this.email,
-    this.phone,
-    this.role,
+    required this.email,
+    required this.phone,
+    required this.role,
     this.gender,
-    this.status,
+    required this.status,
     this.profilePicUrl,
     this.citizenshipUrl,
     this.latitude,
@@ -35,27 +36,32 @@ class UserModel {
     this.job,
     this.availability,
     this.paymentQrUrl,
-  );
+    this.bookingRequests = const [],
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      (json['_id']),
-      (json['firstName']),
-      (json['lastName']),
-      (json['dob']),
-      (json['email']),
-      (json['phone']),
-      (json['role']),
-      (json['gender']),
-      (json['status']),
-      (json['profilePicUrl']),
-      (json['citizenshipUrl']),
-      (json['latitude']),
-      (json['longitude']),
-      (json['address']),
-      (json['job']),
-      (json['availability']),
-      (json['paymentQrUrl']),
+      id: json['_id'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      dob: json['dob'] != null ? DateTime.parse(json['dob']) : null,
+      email: json['email'],
+      phone: json['phone'],
+      role: json['role'],
+      gender: json['gender'],
+      status: json['status'],
+      profilePicUrl: json['profilePicUrl'],
+      citizenshipUrl: json['citizenshipUrl'],
+      latitude: json['latitude'],
+      longitude: json['longitude'],
+      address: json['address'],
+      job: json['job'],
+      availability: json['availability'],
+      paymentQrUrl: json['paymentQrUrl'],
+      bookingRequests: (json['bookingRequests'] as List<dynamic>?)
+              ?.map((x) => Booking.fromJson(x))
+              .toList() ??
+          [],
     );
   }
 
@@ -65,7 +71,9 @@ class UserModel {
         'lastName': lastName,
         'email': email,
         'phone': phone,
-        'dob': dob,
+        'dob': dob
+            ?.toUtc()
+            .toIso8601String(), // Format as "2023-12-28T18:51:00.000"
         'role': role,
         'gender': gender,
         'status': status,
@@ -77,5 +85,57 @@ class UserModel {
         'job': job,
         'availability': availability,
         'paymentQrUrl': paymentQrUrl,
+        'bookingRequests':
+            List<dynamic>.from(bookingRequests.map((x) => x.toJson())),
+      };
+
+  UserModel.empty()
+      : id = '',
+        firstName = '',
+        lastName = '',
+        dob = null,
+        email = '',
+        phone = 0,
+        role = '',
+        gender = null,
+        status = '',
+        profilePicUrl = '',
+        citizenshipUrl = '',
+        latitude = 0,
+        longitude = 0,
+        address = '',
+        job = '',
+        availability = '',
+        paymentQrUrl = '',
+        bookingRequests = [];
+
+  void updateAddress(
+      double newLatitude, double newLongitude, String newAddress) {
+    latitude = newLatitude;
+    longitude = newLongitude;
+    address = newAddress;
+  }
+}
+
+class Booking {
+  String id;
+  String userId;
+  DateTime dateTime;
+
+  Booking({
+    required this.id,
+    required this.userId,
+    required this.dateTime,
+  });
+
+  factory Booking.fromJson(Map<String, dynamic> json) => Booking(
+        id: json['_id'],
+        userId: json['userId'],
+        dateTime: DateTime.parse(json['dateTime']),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'userId': userId,
+        'dateTime': dateTime.toUtc().toIso8601String(),
       };
 }
