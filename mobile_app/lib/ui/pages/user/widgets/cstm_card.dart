@@ -41,17 +41,31 @@ class CstmCard extends StatelessWidget {
               width: 20,
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   ('${user.firstName} ${user.lastName}').toTitleCase(),
                   style: const TextStyle(fontSize: 16),
                 ),
-                Text((user.job!).toTitleCase()),
-                user.availability != null
-                    ? Text(user.availability!)
-                    : Container(),
+                Text((user.job ?? 'N/a').toTitleCase()),
               ],
             ),
+            Spacer(),
+            user.availability != null
+                ? Container(
+                    margin: const EdgeInsets.only(right: 5),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                        color: user.availability == 'available'
+                            ? Theme.of(context).colorScheme.tertiary
+                            : Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Text(
+                      user.availability!.toTitleCase(),
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

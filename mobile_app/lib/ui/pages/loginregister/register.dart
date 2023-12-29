@@ -75,7 +75,7 @@ class _RegisterPageState extends State<RegisterPage> {
             context: context,
             email: _emailController.text,
             otp: otp,
-            purpose: 'registration to the app',
+            purpose: 'registration',
           );
           if (verifyResult == 'ok') {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -155,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Create an account.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 27,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -25,7 +25,6 @@ exports.uploadKYC = async (req, res, next) => {
     try {
         const id = req.params.id;
         const { latitude, longitude, address, job, dob, gender } = req.body;
-        console.log(dob);
         const user = await UserModel.findOneAndUpdate({ _id: id }, { latitude, longitude, address, dob, gender, status: 'pending' }, { new: true, runValidators: true });
         const worker = await WorkerModel.findOneAndUpdate({ _id: id }, { job }, { new: true, runValidators: true });
 

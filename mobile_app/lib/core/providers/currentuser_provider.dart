@@ -17,6 +17,11 @@ class CurrentUser extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setAvailability(String newAvailablity) {
+    _currentUser.availability = newAvailablity;
+    notifyListeners();
+  }
+
   void logoutUser() {
     _currentUser = UserModel.empty();
     notifyListeners();

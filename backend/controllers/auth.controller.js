@@ -1,5 +1,6 @@
 const WorkerModel = require('../models/worker.model');
 const AuthService = require('../services/auth.service');
+const otpGenerator = require('otp-generator');
 
 
 exports.login = async (req, res, next) => {
@@ -78,7 +79,14 @@ exports.getRegisOTP = async (req, res, next) => {
 
         const userName = `${firstName} ${lastName}`;
 
-        await AuthService.sendOTP(email, 'registration to the app', userName, res, next);
+        const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+
+        const message = `Thank you for choosing Khoj. Use the following OTP
+        to complete the procedure to register to the app. This OTP is
+        valid for <span style="font-weight: 600; color: #1f1f1f;">10 minutes</span>.
+        Do not share this code with others, including Khoj employees.`
+
+        await AuthService.sendEmail(email, userName, message, otp, 'registration', res, next);
 
     } catch (error) {
         return next(error);
@@ -97,11 +105,19 @@ exports.getResetOTP = async (req, res, next) => {
 
         const userName = `${user.firstName} ${user.lastName}`;
 
-        await AuthService.sendOTP(email, 'reset your password', userName);
+        const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
+
+        const message = `Use the following OTP to complete the procedure to 
+        reset your password. This OTP is valid for 
+        <span style="font-weight: 600; color: #1f1f1f;">10 minutes</span>.
+        Do not share this code with others, including Khoj employees.`
+
+        await AuthService.sendEmail(email, userName, message, otp, 'password reset',  res, next);
 
         res.status(200).json('OTP sent.');
 
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

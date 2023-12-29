@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               ),
             ),
             Lottie.asset(
-              'assets/lottie/login_hello.json',
+              'assets/lottie/khoj_lottie.json',
               width: MediaQuery.of(context).size.width,
               height: 200,
               reverse: true,

@@ -216,6 +216,9 @@ class _HomePageState extends State<HomePage> {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const Divider(
+                              thickness: 0,
+                            ),
                             const Text(
                               'Discover Workers',
                               style: TextStyle(

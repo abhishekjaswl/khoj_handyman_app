@@ -11,10 +11,9 @@ const bookingSchema = new Schema({
     dateTime: {
         type: Date,
         required: true
-    }, status: {
+    }, 
+    message: {
         type: String,
-        enum: ['accepted', 'declined'],
-        default: 'available'
     },
 });
 
@@ -32,6 +31,7 @@ const workerSchema = new Schema({
         default: 'available'
     },
     bookingRequests: [bookingSchema],
+    currentBooking: [bookingSchema],
     bookingHistory: [bookingSchema]
 });
 

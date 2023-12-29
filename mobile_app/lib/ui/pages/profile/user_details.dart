@@ -28,14 +28,14 @@ class UserDetails extends StatefulWidget {
 class _UserDetailsState extends State<UserDetails> {
   late UserModel _user;
   late String _title;
-  late String _availability;
+  late String? _availability;
 
   @override
   void initState() {
     super.initState();
     _user = widget.user;
     _title = widget.title;
-    _availability = widget.user.availability!;
+    _availability = widget.user.availability;
   }
 
   @override
@@ -160,15 +160,16 @@ class _UserDetailsState extends State<UserDetails> {
                               'Status',
                               style: TextStyle(fontWeight: FontWeight.w700),
                             ),
-                            subtitle: Text(_availability.toTitleCase()),
+                            subtitle: Text(_availability!.toTitleCase()),
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 20),
-                            onTap: () {
-                              Provider.of<CurrentUser>(context, listen: false)
-                                          .user
-                                          .id ==
-                                      _user.id
-                                  ? showModalBottomSheet<void>(
+                            onTap: Provider.of<CurrentUser>(context,
+                                            listen: false)
+                                        .user
+                                        .id ==
+                                    _user.id
+                                ? () {
+                                    showModalBottomSheet<void>(
                                       context: context,
                                       builder: (BuildContext context) {
                                         return SizedBox(
@@ -203,6 +204,10 @@ class _UserDetailsState extends State<UserDetails> {
                                                   ),
                                                   setState(() {
                                                     _availability = 'available';
+                                                    context
+                                                        .read<CurrentUser>()
+                                                        .setAvailability(
+                                                            'available');
                                                   })
                                                 },
                                               ),
@@ -232,6 +237,10 @@ class _UserDetailsState extends State<UserDetails> {
                                                   setState(() {
                                                     _availability =
                                                         'unavailable';
+                                                    context
+                                                        .read<CurrentUser>()
+                                                        .setAvailability(
+                                                            'unavailable');
                                                   })
                                                 },
                                               ),
@@ -239,9 +248,9 @@ class _UserDetailsState extends State<UserDetails> {
                                           ),
                                         );
                                       },
-                                    )
-                                  : {};
-                            },
+                                    );
+                                  }
+                                : null,
                           ),
                         ],
                       ),
@@ -332,7 +341,6 @@ class _UserDetailsState extends State<UserDetails> {
                                 contentPadding: const EdgeInsets.all(14),
                               ),
                               readOnly: true,
-                              //set it true, so that user will not able to edit text
                               onTap: () async {
                                 showDatePicker(
                                   context: context,
@@ -340,13 +348,11 @@ class _UserDetailsState extends State<UserDetails> {
                                   firstDate: DateTime(2000),
                                   lastDate: DateTime(2101),
                                 ).then((selectedDate) {
-                                  // After selecting the date, display the time picker.
                                   if (selectedDate != null) {
                                     showTimePicker(
                                       context: context,
                                       initialTime: TimeOfDay.now(),
                                     ).then((selectedTime) {
-                                      // Handle the selected date and time here.
                                       if (selectedTime != null) {
                                         DateTime selectedDateTime = DateTime(
                                           selectedDate.year,
@@ -355,12 +361,10 @@ class _UserDetailsState extends State<UserDetails> {
                                           selectedTime.hour,
                                           selectedTime.minute,
                                         );
-                                        // Format the DateTime using the desired format
                                         String formattedDateTime = DateFormat(
                                                 "yyyy-MM-ddTHH:mm:ss.SSSZ")
                                             .format(selectedDateTime);
-                                        print(
-                                            formattedDateTime); // You can use the selectedDateTime as needed.
+                                        print(formattedDateTime);
                                       }
                                     });
                                   }
@@ -383,7 +387,7 @@ class _UserDetailsState extends State<UserDetails> {
                                   BookingService.updateBookingRequests(
                                     context: context,
                                     id: _user.id,
-                                    action: 'accept',
+                                    action: 'book',
                                   );
                                 },
                               ),

@@ -1,7 +1,6 @@
 require('dotenv').config();
 const UserModel = require('../models/user.model');
 var nodemailer = require('nodemailer');
-const otpGenerator = require('otp-generator');
 const otpModel = require('../models/otp.model');
 
 class AuthService {
@@ -22,11 +21,8 @@ class AuthService {
         }
     }
 
-    static async sendOTP(email, purpose, userName, res, next) {
+    static async sendEmail(email, userName, message, otp, purpose, res, next) {
         try {
-            const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
-
-            // Generate an HTML email with the provided contents
             var emailBody = `
             <!DOCTYPE html>
             <html lang="en">
@@ -88,16 +84,7 @@ class AuthService {
                     "
                     >
                     <div style="width: 100%; max-width: 489px; margin: 0 auto;">
-                        <h1
-                        style="
-                            margin: 0;
-                            font-size: 24px;
-                            font-weight: 500;
-                            color: #1f1f1f;
-                        "
-                        >
-                        Your OTP
-                        </h1>
+                        
                         <p
                         style="
                             margin: 0;
@@ -115,27 +102,35 @@ class AuthService {
                             font-weight: 500;
                             letter-spacing: 0.56px;
                         ">
-                        Thank you for choosing Khoj. Use the following OTP
-                        to complete the procedure to ${purpose}. This OTP is
-                        valid for <span style="font-weight: 600; color: #1f1f1f;">10 minutes</span>.
-                        Do not share this code with others, including Khoj employees.
+                        ${message}
                         </p>
+                        
+                        
+                        ${otp != null ?
+                    `<h1 style = "
+                            margin: 0;
+                            font - size: 24px;
+                            font - weight: 500;
+                            color: #1f1f1f;
+                            "
+                        >
+                        Your OTP
+                        </h1 >
                         <p
-                        style="
+                            style="
                             margin: 0;
                             margin-top: 60px;
                             font-size: 40px;
                             font-weight: 600;
                             letter-spacing: 25px;
                             color: #ba3d4f;
-                        ">
-                        ${otp}
-                        </p>
-                    </div>
-                    </div>
+                            ">   </p>` : ``}
+                
+                    </div >
+                    </div >
 
-                    <p
-                    style="
+                <p
+                style="
                         max-width: 400px;
                         margin: 0 auto;
                         margin-top: 90px;
@@ -143,25 +138,25 @@ class AuthService {
                         font-weight: 500;
                         color: #8c8c8c;
                     "
-                    >
-                    Need help? Ask at
-                    <a
-                        href="mailto:khoj@gmail.com"
-                        style="color: #499fb6; text-decoration: none;"
-                        >khoj@gmail.com</a
-                    >
-                    or visit our
-                    <a
-                        href=""
-                        target="_blank"
-                        style="color: #499fb6; text-decoration: none;"
-                        >Help Center</a
-                    >
-                    </p>
-                </main>
+                >
+                Need help? Ask at
+                <a
+                    href="mailto:khoj@gmail.com"
+                    style="color: #499fb6; text-decoration: none;"
+                >khoj@gmail.com</a
+                >
+                or visit our
+                <a
+                    href=""
+                    target="_blank"
+                    style="color: #499fb6; text-decoration: none;"
+                >Help Center</a
+                >
+                </p>
+                </main >
 
-                <footer
-                    style="
+            <footer
+                style="
                     width: 100%;
                     max-width: 490px;
                     margin: 20px auto 0;
@@ -169,7 +164,7 @@ class AuthService {
                     border-top: 1px solid #e6ebf1;
                     "
                 >
-                    <p
+                <p
                     style="
                         margin: 0;
                         margin-top: 40px;
@@ -177,18 +172,18 @@ class AuthService {
                         font-weight: 600;
                         color: #434343;
                     "
-                    >
+                >
                     Khoj
-                    </p>
-                    <p style="margin: 0; margin-top: 8px; color: #434343;">
+                </p>
+                <p style="margin: 0; margin-top: 8px; color: #434343;">
                     Address Kamalpokhari, Kathmandu.
-                    </p>
-                    <div style="margin: 0; margin-top: 16px;">
+                </p>
+                <div style="margin: 0; margin-top: 16px;">
                     <a href="" target="_blank" style="display: inline-block;">
                         <img
-                        width="36px"
-                        alt="Facebook"
-                        src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook"
+                            width="36px"
+                            alt="Facebook"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661502815169_682499/email-template-icon-facebook"
                         />
                     </a>
                     <a
@@ -197,19 +192,19 @@ class AuthService {
                         style="display: inline-block; margin-left: 8px;"
                     >
                         <img
-                        width="36px"
-                        alt="Instagram"
-                        src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram"
-                    /></a>
+                            width="36px"
+                            alt="Instagram"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661504218208_684135/email-template-icon-instagram"
+                        /></a>
                     <a
                         href=""
                         target="_blank"
                         style="display: inline-block; margin-left: 8px;"
                     >
                         <img
-                        width="36px"
-                        alt="Twitter"
-                        src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter"
+                            width="36px"
+                            alt="Twitter"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503043040_372004/email-template-icon-twitter"
                         />
                     </a>
                     <a
@@ -218,19 +213,18 @@ class AuthService {
                         style="display: inline-block; margin-left: 8px;"
                     >
                         <img
-                        width="36px"
-                        alt="Youtube"
-                        src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube"
-                    /></a>
-                    </div>
-                    <p style="margin: 0; margin-top: 16px; color: #434343;">
-                    Copyright © 2024 Company. All rights reserved.
-                    </p>
-                </footer>
+                            width="36px"
+                            alt="Youtube"
+                            src="https://archisketch-resources.s3.ap-northeast-2.amazonaws.com/vrstyler/1661503195931_210869/email-template-icon-youtube"
+                        /></a>
                 </div>
-            </body>
-            </html>
-
+                <p style="margin: 0; margin-top: 16px; color: #434343;">
+                    Copyright © 2024 Company. All rights reserved.
+                </p>
+            </footer>
+                </div >
+            </body >
+            </html >
             `;
 
             const transporter = nodemailer.createTransport({
@@ -241,36 +235,55 @@ class AuthService {
                 }
             });
 
-            // Save the OTP in the database
-            const otpDocument = new otpModel({
-                email: email,
-                otp: otp,
-                purpose: purpose,
-            });
-
-            otpDocument.save()
-                .then(() => {
-
-                    var mailOptions = {
-                        from: process.env.EMAIL,
-                        to: email,
-                        subject: `Verify your ${purpose}.`,
-                        html: emailBody,
-                    };
-
-                    transporter.sendMail(mailOptions, function (error, info) {
-                        if (error) {
-                            return next(error);
-                        }
-                        else {
-                            res.status(200).json('OTP sent.');
-                        }
-                    });
-                })
-                .catch((error) => {
-                    // Handle database save error
-                    return next('Error saving OTP:', error);
+            if (otp != null) {
+                // Save the OTP in the database
+                const otpDocument = new otpModel({
+                    email: email,
+                    otp: otp,
+                    purpose: purpose,
                 });
+
+                otpDocument.save()
+                    .then(() => {
+
+                        var mailOptions = {
+                            from: process.env.EMAIL,
+                            to: email,
+                            subject: `Verify your ${purpose}.`,
+                            html: emailBody,
+                        };
+
+                        transporter.sendMail(mailOptions, function (error, info) {
+                            if (error) {
+                                return next(error);
+                            }
+                            else {
+                                res.status(200).json('OTP sent.');
+                            }
+                        });
+                    })
+                    .catch((error) => {
+                        // Handle database save error
+                        return next('Error saving OTP:', error);
+                    });
+            } else {
+                var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: purpose,
+                    html: emailBody,
+                };
+
+                transporter.sendMail(mailOptions, function (error, info) {
+                    if (error) {
+                        return next(error);
+                    }
+                    else {
+                        res.status(200).json('Email sent.');
+                    }
+                });
+            }
+
 
         } catch (error) {
             return next(error);

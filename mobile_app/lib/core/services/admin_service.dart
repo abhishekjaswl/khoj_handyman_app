@@ -116,7 +116,9 @@ class AdminService {
             type: 'success',
           ),
         );
-        Navigator.of(context).pop();
+        Navigator.of(context)
+          ..pop()
+          ..pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(

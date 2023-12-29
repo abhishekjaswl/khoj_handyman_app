@@ -204,7 +204,7 @@ class _BookingDetailsState extends State<BookingDetails> {
                                   BookingService.updateBookingRequests(
                                     context: context,
                                     id: _booking.id,
-                                    action: 'delete',
+                                    action: 'decline',
                                   );
                                 },
                               ),

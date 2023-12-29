@@ -50,93 +50,89 @@ class _AdminHomePageState extends State<AdminHomePage> {
             },
           ),
           SliverToBoxAdapter(
-            child: Column(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: Card(
-                    margin: const EdgeInsets.all(8),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Welcome Back, ${'${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'.toTitleCase()}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const Text(
-                            'Ready to get work done?',
-                            style: TextStyle(fontSize: 15),
-                          )
-                        ],
+            child: Card(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome Back, ${'${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'.toTitleCase()}',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                  ),
+                    const Text(
+                      'Ready to get work done?',
+                      style: TextStyle(fontSize: 15),
+                    )
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: FutureBuilder<List<UserModel>>(
-              future: _userListFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                      ),
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Center(
-                      child: Text(
-                        '${snapshot.error}',
-                      ),
-                    ),
-                  );
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: Text(
-                        'Oh no! There are no users!.',
-                        style: TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  );
-                } else {
-                  final userList = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: userList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      UserModel user = userList[index];
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => UserDetails(
-                                      user: user,
-                                      title: 'User Details',
-                                    ))),
-                        child: CstmCard(
-                          user: user,
+          SliverFillRemaining(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: FutureBuilder<List<UserModel>>(
+                future: _userListFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 4,
                         ),
-                      );
-                    },
-                  );
-                }
-              },
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: Center(
+                        child: Text(
+                          '${snapshot.error}',
+                        ),
+                      ),
+                    );
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(
+                        child: Text(
+                          'Oh no! There are no users!.',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  } else {
+                    final userList = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: userList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        UserModel user = userList[index];
+                        return GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => UserDetails(
+                                        user: user,
+                                        title: 'User Details',
+                                      ))),
+                          child: CstmCard(
+                            user: user,
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
             ),
           ),
         ],

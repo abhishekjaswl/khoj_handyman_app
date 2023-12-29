@@ -42,37 +42,28 @@ class _VerificationRequestsState extends State<VerificationRequests> {
               });
             },
           ),
-          SliverToBoxAdapter(
+          SliverFillRemaining(
             child: FutureBuilder<List<UserModel>>(
               future: _pendingListFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                      ),
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
                     ),
                   );
                 } else if (snapshot.hasError) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: Center(
-                      child: Text(
-                        '${snapshot.error}',
-                      ),
+                  return Center(
+                    child: Text(
+                      '${snapshot.error}',
                     ),
                   );
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height,
-                    child: const Center(
-                      child: Text(
-                        'There are no pending verification requests!.',
-                        style: TextStyle(fontSize: 18),
-                        textAlign: TextAlign.center,
-                      ),
+                  return const Center(
+                    child: Text(
+                      'There are no pending verification requests!.',
+                      style: TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
                     ),
                   );
                 } else {

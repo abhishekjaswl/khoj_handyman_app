@@ -60,7 +60,10 @@ class _UploadDocumentsState extends State<UploadDocuments> {
   File? selectedPaymentQR;
 
   void uploadKYC() async {
-    if (Provider.of<CurrentUser>(context, listen: false).user.role == 'user' &&
+    if ((Provider.of<CurrentUser>(context, listen: false).user.role ==
+                'worker' ||
+            Provider.of<CurrentUser>(context, listen: false).user.role ==
+                'admin') &&
         selectedCitizenship != null &&
         selectedImage != null &&
         selectedDate != null) {
