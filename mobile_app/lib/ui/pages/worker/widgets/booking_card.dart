@@ -26,8 +26,8 @@ class BookingCard extends StatelessWidget {
                   NetworkSource(user.profilePicUrl!)
               ],
               shape: AvatarShape.rectangle(
-                80,
-                80,
+                90,
+                90,
                 const BorderRadius.all(
                   Radius.circular(5),
                 ),

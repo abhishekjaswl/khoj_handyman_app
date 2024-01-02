@@ -181,68 +181,66 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverFillRemaining(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: FutureBuilder<List<UserModel>>(
-                future: _workerListFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text(
-                        '${snapshot.error}',
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No Handymen Available!',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-                  } else {
-                    final userList = snapshot.data!;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: userList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        UserModel user = userList[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Divider(
-                              thickness: 0,
-                            ),
-                            const Text(
+            child: FutureBuilder<List<UserModel>>(
+              future: _workerListFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                      strokeWidth: 4,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      '${snapshot.error}',
+                    ),
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Text(
+                      'No Handymen Available!',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  );
+                } else {
+                  final userList = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: userList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      UserModel user = userList[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Divider(
+                            thickness: 0,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: Text(
                               'Discover Workers',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w700),
                             ),
-                            GestureDetector(
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => UserDetails(
-                                            user: user,
-                                            title: 'Booking',
-                                          ))),
-                              child: CstmCard(
-                                user: user,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
+                          ),
+                          CstmCard(
+                            user: user,
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UserDetails(
+                                          user: user,
+                                          title: 'Booking',
+                                        ))),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
             ),
           ),
         ],

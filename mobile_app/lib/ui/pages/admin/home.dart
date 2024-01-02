@@ -4,11 +4,9 @@ import 'package:mobile_app/core/providers/currentuser_provider.dart';
 import 'package:mobile_app/core/services/admin_service.dart';
 import 'package:mobile_app/ui/widgets/cstm_appbar.dart';
 import 'package:mobile_app/ui/widgets/cstm_drawer.dart';
+import 'package:mobile_app/ui/widgets/listview.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
-
-import '../profile/user_details.dart';
-import '../user/widgets/cstm_card.dart';
 
 class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key});
@@ -18,13 +16,6 @@ class AdminHomePage extends StatefulWidget {
 }
 
 class _AdminHomePageState extends State<AdminHomePage> {
-  late Future<List<UserModel>> _userListFuture;
-  @override
-  void initState() {
-    super.initState();
-    _userListFuture = _getUsers();
-  }
-
   Future<List<UserModel>> _getUsers() async {
     try {
       return await AdminService.getAllUsers();
@@ -45,7 +36,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
           CstmAppBar(
             stretchTrigger: () {
               return Future.delayed(const Duration(seconds: 1), () {
-                setState(() {});
+                setState(() {
+                  _getUsers();
+                });
               });
             },
           ),
@@ -73,68 +66,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
               ),
             ),
           ),
-          SliverFillRemaining(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: FutureBuilder<List<UserModel>>(
-                future: _userListFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 4,
-                        ),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: Center(
-                        child: Text(
-                          '${snapshot.error}',
-                        ),
-                      ),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return SizedBox(
-                      height: MediaQuery.of(context).size.height,
-                      child: const Center(
-                        child: Text(
-                          'Oh no! There are no users!.',
-                          style: TextStyle(fontSize: 18),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
-                  } else {
-                    final userList = snapshot.data!;
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: userList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        UserModel user = userList[index];
-                        return GestureDetector(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => UserDetails(
-                                        user: user,
-                                        title: 'User Details',
-                                      ))),
-                          child: CstmCard(
-                            user: user,
-                          ),
-                        );
-                      },
-                    );
-                  }
-                },
-              ),
-            ),
-          ),
+          CstmList(listFuture: _getUsers()),
         ],
       ),
     );

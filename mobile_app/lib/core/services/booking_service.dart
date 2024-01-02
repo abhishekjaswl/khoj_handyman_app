@@ -12,6 +12,7 @@ import '../models/user_model.dart';
 import 'package:http/http.dart' as http;
 
 import '../providers/currentuser_provider.dart';
+import '../providers/loading_provider.dart';
 
 class BookingService {
   static Future<List<UserModel>> getVerWorkers() async {
@@ -56,6 +57,54 @@ class BookingService {
       } else {
         throw Exception('Failed to load users: $e');
       }
+    }
+  }
+
+  static Future<void> requestBooking({
+    required BuildContext context,
+    required String workerId,
+    required DateTime dateTime,
+    String? message,
+  }) async {
+    try {
+      context.read<IsLoadingData>().setIsLoading(true);
+      var regBody = {
+        'userId': Provider.of<CurrentUser>(context, listen: false).user.id,
+        'workerId': workerId,
+        'dateTime': dateTime.toUtc().toIso8601String(),
+        'message': message,
+      };
+
+      final response = await http
+          .post(Uri.parse(postBookingRequest),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(regBody))
+          .timeout(const Duration(seconds: 20));
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: response.body,
+            type: 'success',
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          CstmSnackBar(
+            text: response.body,
+            type: 'error',
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        CstmSnackBar(
+          text: e.toString(),
+          type: 'error',
+        ),
+      );
+    } finally {
+      context.read<IsLoadingData>().setIsLoading(false);
     }
   }
 

@@ -13,6 +13,7 @@ const uploadKYCApi = "${url}user/uploadKYC";
 const updateAvailability = "${url}user/updateAvailability";
 
 const verWorkerList = "${url}booking/verWorkerList";
+const postBookingRequest = "${url}booking/postBookingRequest";
 const getBookingRequestsApi = "${url}booking/getBookingRequests";
 const updateBookingRequestApi = "${url}booking/updateBookingRequest";
 

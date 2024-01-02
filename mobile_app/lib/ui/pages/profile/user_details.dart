@@ -4,12 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/services/user_service.dart';
 import 'package:mobile_app/ui/pages/profile/view_documents.dart';
+import 'package:mobile_app/ui/pages/profile/widgets/bookingreq_input.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/providers/currentuser_provider.dart';
-import '../../../core/services/booking_service.dart';
-import '../../widgets/cstm_button.dart';
 import '../../widgets/cstm_msgborder.dart';
 
 class UserDetails extends StatefulWidget {
@@ -318,83 +317,8 @@ class _UserDetailsState extends State<UserDetails> {
                     )
                   : Container(),
               _title == 'Booking'
-                  ? Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              decoration: InputDecoration(
-                                suffixIcon: const Icon(Icons.calendar_today),
-                                labelText: "Booking Date and Time",
-                                labelStyle: const TextStyle(fontSize: 15),
-                                filled: true,
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .tertiary)),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                contentPadding: const EdgeInsets.all(14),
-                              ),
-                              readOnly: true,
-                              onTap: () async {
-                                showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(2000),
-                                  lastDate: DateTime(2101),
-                                ).then((selectedDate) {
-                                  if (selectedDate != null) {
-                                    showTimePicker(
-                                      context: context,
-                                      initialTime: TimeOfDay.now(),
-                                    ).then((selectedTime) {
-                                      if (selectedTime != null) {
-                                        DateTime selectedDateTime = DateTime(
-                                          selectedDate.year,
-                                          selectedDate.month,
-                                          selectedDate.day,
-                                          selectedTime.hour,
-                                          selectedTime.minute,
-                                        );
-                                        String formattedDateTime = DateFormat(
-                                                "yyyy-MM-ddTHH:mm:ss.SSSZ")
-                                            .format(selectedDateTime);
-                                        print(formattedDateTime);
-                                      }
-                                    });
-                                  }
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter date and time of booking';
-                                }
-                                return null;
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: CstmButton(
-                                btnColor: Colors.green,
-                                leadingIcon: const Icon(Icons.tour_outlined),
-                                text: 'Book Now',
-                                onPressed: () {
-                                  BookingService.updateBookingRequests(
-                                    context: context,
-                                    id: _user.id,
-                                    action: 'book',
-                                  );
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                  ? BookingRequestInput(
+                      user: _user,
                     )
                   : Container(),
             ],
