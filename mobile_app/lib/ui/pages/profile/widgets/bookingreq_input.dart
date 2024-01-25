@@ -17,7 +17,15 @@ class _BookingRequestInputState extends State<BookingRequestInput> {
   final _bookingFormKey = GlobalKey<FormState>();
 
   final TextEditingController _dtController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
   DateTime? selectedDateTime;
+
+  @override
+  void dispose() {
+    _dtController.dispose();
+    _messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +98,7 @@ class _BookingRequestInputState extends State<BookingRequestInput> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: TextFormField(
+                controller: _messageController,
                 keyboardType: TextInputType.multiline,
                 maxLines: null,
                 decoration: InputDecoration(
@@ -111,15 +120,18 @@ class _BookingRequestInputState extends State<BookingRequestInput> {
               btnColor: Colors.green,
               leadingIcon: const Icon(Icons.tour_outlined),
               text: 'Book Now',
-              onPressed: () {
-                if (_bookingFormKey.currentState!.validate()) {
-                  BookingService.requestBooking(
-                    context: context,
-                    workerId: widget.user.id,
-                    dateTime: selectedDateTime!,
-                  );
-                }
-              },
+              onPressed: widget.user.availability == 'available'
+                  ? () {
+                      if (_bookingFormKey.currentState!.validate()) {
+                        BookingService.requestBooking(
+                          context: context,
+                          workerId: widget.user.id,
+                          dateTime: selectedDateTime!,
+                          message: _messageController.text.trim(),
+                        );
+                      }
+                    }
+                  : null,
             )
           ],
         ),

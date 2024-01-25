@@ -8,7 +8,7 @@ class CstmButton extends StatelessWidget {
   final String text;
   final Color? textColor;
   final Color? btnColor;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const CstmButton({
     super.key,

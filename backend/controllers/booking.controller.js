@@ -24,6 +24,7 @@ exports.verifiedWorkerList = async (req, res, next) => {
 exports.postBookingRequest = async (req, res, next) => {
     try {
         const { userId, workerId, dateTime, message } = req.body;
+        console.log("Received dateTime:", dateTime);
         const worker = await WorkerModel.findOne({ _id: workerId });
         if (!worker) {
             return next('Worker not found!');
@@ -35,7 +36,11 @@ exports.postBookingRequest = async (req, res, next) => {
         });
         const bookingDetails = await worker.save();
         const latestBooking = bookingDetails.bookingRequests[bookingDetails.bookingRequests.length - 1];
-        res.status(200).json(latestBooking);
+
+        const user = await UserModel.findOne({ _id: latestBooking.userId });
+
+        console.log("Stored dateTime:", latestBooking.dateTime);
+        res.status(200).json({ ...latestBooking.toObject(), user: user.toObject() });
     } catch (error) {
         return next(error);
     }
@@ -57,7 +62,7 @@ exports.updateBookingRequest = async (req, res, next) => {
             worker.currentBooking.push(booking);
             await worker.save();
         }
-        
+
         const user = await UserModel.findOne({ _id: booking.userId });
         const email = user.email;
         const userName = `${user.firstName} ${user.lastName}`;

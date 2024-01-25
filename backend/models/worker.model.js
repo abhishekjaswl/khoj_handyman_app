@@ -11,7 +11,7 @@ const bookingSchema = new Schema({
     dateTime: {
         type: Date,
         required: true
-    }, 
+    },
     message: {
         type: String,
     },

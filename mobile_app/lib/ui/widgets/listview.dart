@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/ui/pages/profile/user_details.dart';
-import 'package:mobile_app/ui/pages/user/widgets/cstm_card.dart';
+import 'package:mobile_app/ui/widgets/list_card.dart';
 
 class CstmList extends StatefulWidget {
-  final Future<List<UserModel>> listFuture;
+  final Future<List> listFuture;
   const CstmList({super.key, required this.listFuture});
 
   @override
@@ -14,7 +14,7 @@ class CstmList extends StatefulWidget {
 class _CstmListState extends State<CstmList> {
   String _searchQuery = '';
 
-  List<UserModel> _filterUsers(List<UserModel> userList, String searchQuery) {
+  List _filterUsers(List userList, String searchQuery) {
     return userList
         .where((user) => (user.firstName + user.lastName + user.email)
             .toLowerCase()
@@ -25,7 +25,7 @@ class _CstmListState extends State<CstmList> {
   @override
   Widget build(BuildContext context) {
     return SliverFillRemaining(
-      child: FutureBuilder<List<UserModel>>(
+      child: FutureBuilder<List>(
         future: widget.listFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

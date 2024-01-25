@@ -193,8 +193,11 @@ class _UploadDocumentsState extends State<UploadDocuments> {
                             ),
                             SegmentedButton<Gender>(
                               style: ButtonStyle(
-                                padding: const MaterialStatePropertyAll(
-                                    EdgeInsets.all(5.5)),
+                                padding: MaterialStatePropertyAll(
+                                    EdgeInsets.symmetric(
+                                        horizontal:
+                                            MediaQuery.of(context).size.width /
+                                                200)),
                                 shape: const MaterialStatePropertyAll(
                                     RoundedRectangleBorder(
                                         borderRadius: BorderRadius.horizontal(

@@ -127,6 +127,6 @@ class BookingModel {
 
   Map<String, dynamic> toJson() => {
         'user': user.toJson(),
-        'dateTime': dateTime.toUtc().toIso8601String(),
+        'dateTime': dateTime.toIso8601String(),
       };
 }

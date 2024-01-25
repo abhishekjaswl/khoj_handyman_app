@@ -176,7 +176,7 @@ class AuthService {
                     Khoj
                 </p>
                 <p style="margin: 0; margin-top: 8px; color: #434343;">
-                    Address Kamalpokhari, Kathmandu.
+                    Kamalpokhari, Kathmandu.
                 </p>
                 <div style="margin: 0; margin-top: 16px;">
                     <a href="" target="_blank" style="display: inline-block;">

@@ -309,7 +309,7 @@ class _UserDetailsState extends State<UserDetails> {
                                 (_user.paymentQrUrl != null
                                     ? ' | PaymentQr'
                                     : _user.role == 'worker'
-                                        ? 'N/a'
+                                        ? ' | N/a'
                                         : ''),
                           ),
                         ],

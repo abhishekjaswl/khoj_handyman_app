@@ -28,7 +28,6 @@ class CstmLoginSwitcher extends StatelessWidget {
             style: TextStyle(
               color: Theme.of(context).colorScheme.tertiary,
               fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
             ),
           ),
         )

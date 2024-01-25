@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/ui/pages/worker/widgets/booking_details.dart';
 import 'package:provider/provider.dart';
 
 import '../../ui/widgets/cstm_snackbar.dart';
@@ -71,7 +72,7 @@ class BookingService {
       var regBody = {
         'userId': Provider.of<CurrentUser>(context, listen: false).user.id,
         'workerId': workerId,
-        'dateTime': dateTime.toUtc().toIso8601String(),
+        'dateTime': dateTime.toIso8601String(),
         'message': message,
       };
 
@@ -84,10 +85,19 @@ class BookingService {
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(
-            text: response.body,
+            text: 'Booking Successful',
             type: 'success',
           ),
         );
+        var jsonResponse = jsonDecode(response.body);
+        BookingModel bookingInfo = BookingModel.fromJson(jsonResponse);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => BookingDetails(
+                      booking: bookingInfo,
+                      title: 'Booking Details',
+                    )));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           CstmSnackBar(

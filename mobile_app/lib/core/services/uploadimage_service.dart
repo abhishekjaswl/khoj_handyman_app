@@ -48,7 +48,7 @@ class UploadImageService {
               ),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width / 2.75),
+                    horizontal: MediaQuery.of(context).size.width / 2.8),
                 leading: const Icon(Icons.camera_alt),
                 title: const Text('Camera'),
                 onTap: () async {
