@@ -11,7 +11,7 @@ class VerificationRequests extends StatefulWidget {
 }
 
 class _VerificationRequestsState extends State<VerificationRequests> {
-  // returns the list of verified workers
+  // returns the list of pending verification requests
   Future<List<UserModel>> _getPendingList() async {
     try {
       return await AdminService.getPendingList();
@@ -34,7 +34,10 @@ class _VerificationRequestsState extends State<VerificationRequests> {
               });
             },
           ),
-          CstmList(listFuture: _getPendingList()),
+          CstmList(
+            listFuture: _getPendingList(),
+            title: 'User Details',
+          ),
         ],
       ),
     );

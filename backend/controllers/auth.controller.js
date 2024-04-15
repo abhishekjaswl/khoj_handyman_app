@@ -81,6 +81,7 @@ exports.getRegisOTP = async (req, res, next) => {
 
         const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
 
+        console.log(otp);
         const message = `Thank you for choosing Khoj. Use the following OTP
         to complete the procedure to register to the app. This OTP is
         valid for <span style="font-weight: 600; color: #1f1f1f;">10 minutes</span>.

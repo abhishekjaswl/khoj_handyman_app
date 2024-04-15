@@ -49,17 +49,23 @@ class BookingCard extends StatelessWidget {
             const SizedBox(
               width: 20,
             ),
-            Column(
-              children: [
-                Text(
-                  '${user.firstName} ${user.lastName}',
-                  style: const TextStyle(fontSize: 16),
-                ),
-                Text(user.address!),
-                Text(
-                  DateFormat('yyyy-MM-dd | hh:mm a').format(booking.dateTime),
-                ),
-              ],
+            SizedBox(
+              width: 200,
+              child: Column(
+                children: [
+                  Text(
+                    '${user.firstName} ${user.lastName}',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    user.address!,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    DateFormat('yyyy-MM-dd | hh:mm a').format(booking.dateTime),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

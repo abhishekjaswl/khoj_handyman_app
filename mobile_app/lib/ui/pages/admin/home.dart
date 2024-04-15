@@ -27,47 +27,47 @@ class _AdminHomePageState extends State<AdminHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(80),
+        child: CstmAppBar(),
+      ),
       drawer: const CstmDrawer(),
       drawerEnableOpenDragGesture: true,
       drawerEdgeDragWidth: 50,
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          CstmAppBar(
-            stretchTrigger: () {
-              return Future.delayed(const Duration(seconds: 1), () {
-                setState(() {
-                  _getUsers();
-                });
-              });
-            },
-          ),
-          SliverToBoxAdapter(
-            child: Card(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Welcome Back, ${'${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'.toTitleCase()}',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Card(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome Back, ${'${Provider.of<CurrentUser>(context).user.firstName} ${Provider.of<CurrentUser>(context).user.lastName}'.toTitleCase()}',
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Ready to get work done?',
-                      style: TextStyle(fontSize: 15),
-                    )
-                  ],
+                      const Text(
+                        'Ready to get work done?',
+                        style: TextStyle(fontSize: 15),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          CstmList(listFuture: _getUsers()),
-        ],
+            CstmList(
+              listFuture: _getUsers(),
+              title: 'User Details',
+            ),
+          ],
+        ),
       ),
     );
   }

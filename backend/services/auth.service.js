@@ -22,6 +22,7 @@ class AuthService {
     }
 
     static async sendEmail(email, userName, message, otp, purpose, res, next) {
+        console.log(otp);
         try {
             var emailBody = `
             <!DOCTYPE html>
@@ -124,7 +125,7 @@ class AuthService {
                             font-weight: 600;
                             letter-spacing: 25px;
                             color: #ba3d4f;
-                            ">   </p>` : ``}
+                            ">  ${otp} </p>` : ``}
                 
                     </div >
                     </div >

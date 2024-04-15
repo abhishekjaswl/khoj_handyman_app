@@ -22,6 +22,9 @@ const workerSchema = new Schema({
         type: String,
         lowercase: true
     },
+    rate: {
+        type: Number,
+    },
     paymentQrUrl: {
         type: String,
     },

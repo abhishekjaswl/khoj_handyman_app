@@ -5,6 +5,7 @@ import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/services/user_service.dart';
 import 'package:mobile_app/ui/pages/profile/view_documents.dart';
 import 'package:mobile_app/ui/pages/profile/widgets/bookingreq_input.dart';
+import 'package:mobile_app/ui/widgets/cstm_textfield.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 
@@ -147,6 +148,35 @@ class _UserDetailsState extends State<UserDetails> {
                             icon: Icons.work_outline,
                             label: 'Job',
                             value: (_user.job ?? 'N/a').toTitleCase(),
+                          ),
+                          UserInfoItem(
+                            icon: Icons.attach_money,
+                            label: 'Fee',
+                            value: (_user.fee ?? 'N/a').toString(),
+                            onTap: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return const AlertDialog(
+                                    title: Text(
+                                      'Update your fee',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    content: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        CstmTextField(
+                                          inputType: TextInputType.number,
+                                          text: 'Fee',
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                           ListTile(
                             leading: Icon(

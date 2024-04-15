@@ -74,8 +74,6 @@ class _BookingRequestInputState extends State<BookingRequestInput> {
                             selectedTime.minute,
                           );
 
-                          print(dateTime);
-
                           setState(() {
                             selectedDateTime = dateTime;
                             _dtController.text =

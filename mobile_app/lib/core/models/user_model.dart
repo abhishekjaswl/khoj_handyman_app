@@ -14,6 +14,7 @@ class UserModel {
   double? longitude;
   String? address;
   String? job;
+  int? fee;
   String? availability;
   String? paymentQrUrl;
 
@@ -33,6 +34,7 @@ class UserModel {
     this.longitude,
     this.address,
     this.job,
+    this.fee,
     this.availability,
     this.paymentQrUrl,
   });
@@ -54,6 +56,7 @@ class UserModel {
       longitude: json['longitude'],
       address: json['address'],
       job: json['job'],
+      fee: json['fee'],
       availability: json['availability'],
       paymentQrUrl: json['paymentQrUrl'],
     );
@@ -77,6 +80,7 @@ class UserModel {
         'longitude': longitude,
         'address': address,
         'job': job,
+        'fee': fee,
         'availability': availability,
         'paymentQrUrl': paymentQrUrl,
       };
@@ -97,6 +101,7 @@ class UserModel {
         longitude = 0,
         address = '',
         job = '',
+        fee = 0,
         availability = '',
         paymentQrUrl = '';
 

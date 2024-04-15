@@ -15,7 +15,13 @@ const updateAvailability = "${url}user/updateAvailability";
 const verWorkerList = "${url}booking/verWorkerList";
 const postBookingRequest = "${url}booking/postBookingRequest";
 const getBookingRequestsApi = "${url}booking/getBookingRequests";
+const getBookingRequestsWorkApi = "${url}booking/getBookingHistory";
+const getCurrentBookingsApi = "${url}booking/getCurrentBookings";
+const getUserBookingHistoryApi = "${url}booking/getUserBookHistory";
+const getWorkerBookingHistoryApi = "${url}booking/getBookingHistory";
 const updateBookingRequestApi = "${url}booking/updateBookingRequest";
+const updateCurrentBookingApi = "${url}booking/updateCurrentBooking";
+const getBookingsList = "${url}booking/getUserBookReq";
 
 const allUsers = "${url}admin/allUsers";
 const userList = "${url}admin/userList";

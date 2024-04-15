@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/core/providers/theme_provider.dart';
 import 'package:mobile_app/ui/pages/admin/pages/verification/verification_requests.dart';
+import 'package:mobile_app/ui/pages/history/userHistory.dart';
+import 'package:mobile_app/ui/pages/history/workerHistory.dart';
 import 'package:mobile_app/ui/pages/profile/user_details.dart';
+import 'package:mobile_app/ui/pages/user/my_bookings.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
 import 'package:provider/provider.dart';
 import 'package:avatars/avatars.dart';
@@ -87,20 +90,28 @@ class _CstmDrawerState extends State<CstmDrawer> {
               title: 'Profile',
             )),
           ),
+          Provider.of<CurrentUser>(context).user.role == 'admin'
+              ? ListTileItem(
+                  leading: Icons.new_releases_outlined,
+                  title: 'Verification Requests',
+                  onTap: () => redirectFunc(const VerificationRequests()),
+                )
+              : Container(),
+          Provider.of<CurrentUser>(context).user.role == 'user'
+              ? ListTileItem(
+                  leading: Icons.book_online,
+                  title: 'My Bookings',
+                  onTap: () => redirectFunc(const MyBooking()),
+                )
+              : Container(),
           ListTileItem(
-            leading: Icons.new_releases_outlined,
-            title: 'Verification Requests',
-            onTap: () => redirectFunc(const VerificationRequests()),
-          ),
-          ListTileItem(
-            leading: Icons.abc,
-            title: 'Unknown',
-            onTap: () {},
-          ),
-          ListTileItem(
-            leading: Icons.abc,
-            title: 'Unknown',
-            onTap: () {},
+            leading: Icons.history,
+            title: 'Booking History',
+            onTap: () => redirectFunc(
+                Provider.of<CurrentUser>(context, listen: false).user.role ==
+                        'user'
+                    ? const UserHistory()
+                    : const WorkerHistory()),
           ),
           const Spacer(),
           ListTile(

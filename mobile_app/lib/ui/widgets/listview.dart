@@ -5,7 +5,12 @@ import 'package:mobile_app/ui/widgets/list_card.dart';
 
 class CstmList extends StatefulWidget {
   final Future<List> listFuture;
-  const CstmList({super.key, required this.listFuture});
+  final String title;
+  const CstmList({
+    super.key,
+    required this.listFuture,
+    required this.title,
+  });
 
   @override
   State<CstmList> createState() => _CstmListState();
@@ -24,7 +29,8 @@ class _CstmListState extends State<CstmList> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverFillRemaining(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
       child: FutureBuilder<List>(
         future: widget.listFuture,
         builder: (context, snapshot) {
@@ -53,8 +59,7 @@ class _CstmListState extends State<CstmList> {
             return Column(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 5),
                   child: TextField(
                     onChanged: (value) {
                       setState(() {
@@ -101,7 +106,7 @@ class _CstmListState extends State<CstmList> {
                                   MaterialPageRoute(
                                       builder: (context) => UserDetails(
                                             user: user,
-                                            title: 'User Details',
+                                            title: widget.title,
                                           ))),
                             );
                           },

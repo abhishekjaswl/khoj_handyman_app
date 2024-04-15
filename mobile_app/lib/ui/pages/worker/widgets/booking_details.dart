@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app/core/models/user_model.dart';
 import 'package:mobile_app/core/services/booking_service.dart';
+import 'package:mobile_app/ui/pages/worker/payment.dart';
 import 'package:mobile_app/ui/pages/worker/widgets/location.dart';
 import 'package:mobile_app/ui/pages/worker/widgets/map.dart';
 import 'package:mobile_app/utils/extensions/string_ext.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../core/providers/currentuser_provider.dart';
 import '../../../widgets/cstm_button.dart';
 
 class BookingDetails extends StatefulWidget {
@@ -148,74 +151,155 @@ class _BookingDetailsState extends State<BookingDetails> {
                   ],
                 ),
               ),
-              Card(
-                margin: EdgeInsets.zero,
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                            labelText: 'Message',
-                            labelStyle: const TextStyle(fontSize: 15),
-                            filled: true,
-                            focusColor: Theme.of(context).colorScheme.tertiary,
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .tertiary)),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            contentPadding: const EdgeInsets.all(13),
-                            prefixIcon: const Icon(Icons.abc)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+              _title != 'Booking History'
+                  ? Card(
+                      margin: EdgeInsets.zero,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
                           children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.3,
-                              child: CstmButton(
-                                btnColor: Colors.green,
-                                leadingIcon: const Icon(Icons.check),
-                                text: 'Accept',
-                                onPressed: () {
-                                  BookingService.updateBookingRequests(
-                                    context: context,
-                                    id: _booking.id,
-                                    action: 'accept',
-                                  );
-                                },
-                              ),
+                            TextFormField(
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration(
+                                  labelText: 'Message',
+                                  labelStyle: const TextStyle(fontSize: 15),
+                                  filled: true,
+                                  focusColor:
+                                      Theme.of(context).colorScheme.tertiary,
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .tertiary)),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  contentPadding: const EdgeInsets.all(13),
+                                  prefixIcon: const Icon(Icons.abc)),
                             ),
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 2.3,
-                              child: CstmButton(
-                                btnColor: Colors.red,
-                                leadingIcon: const Icon(Icons.close),
-                                text: 'Decline',
-                                onPressed: () {
-                                  BookingService.updateBookingRequests(
-                                    context: context,
-                                    id: _booking.id,
-                                    action: 'decline',
-                                  );
-                                },
-                              ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Provider.of<CurrentUser>(context)
+                                          .user
+                                          .role ==
+                                      'worker'
+                                  ? _title == 'Booking'
+                                      ? Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2.3,
+                                              child: CstmButton(
+                                                btnColor: Colors.green,
+                                                leadingIcon:
+                                                    const Icon(Icons.check),
+                                                text: 'Accept',
+                                                onPressed: () {
+                                                  BookingService
+                                                      .updateBookingRequests(
+                                                    context: context,
+                                                    id: _booking.id,
+                                                    action: 'accept',
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2.3,
+                                              child: CstmButton(
+                                                btnColor: Colors.red,
+                                                leadingIcon:
+                                                    const Icon(Icons.close),
+                                                text: 'Decline',
+                                                onPressed: () {
+                                                  BookingService
+                                                      .updateBookingRequests(
+                                                    context: context,
+                                                    id: _booking.id,
+                                                    action: 'decline',
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2.3,
+                                              child: CstmButton(
+                                                btnColor: Colors.green,
+                                                leadingIcon:
+                                                    const Icon(Icons.check),
+                                                text: 'Complete',
+                                                onPressed: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Payment(
+                                                        bookingId: _booking.id,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  2.3,
+                                              child: CstmButton(
+                                                btnColor: Colors.red,
+                                                leadingIcon:
+                                                    const Icon(Icons.close),
+                                                text: 'Cancel',
+                                                onPressed: () {
+                                                  BookingService
+                                                      .updateCurrentBooking(
+                                                    context: context,
+                                                    id: _booking.id,
+                                                    action: 'cancel',
+                                                  );
+                                                },
+                                              ),
+                                            )
+                                          ],
+                                        )
+                                  : CstmButton(
+                                      btnColor: Colors.red,
+                                      leadingIcon: const Icon(Icons.close),
+                                      text: 'Cancel',
+                                      onPressed: () {
+                                        BookingService.updateBookingRequests(
+                                          context: context,
+                                          id: _booking.id,
+                                          action: 'cancel',
+                                        );
+                                      },
+                                    ),
                             )
                           ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              )
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),

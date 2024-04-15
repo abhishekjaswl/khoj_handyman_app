@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CstmAppBar extends StatefulWidget {
-  final Future<void> Function()? stretchTrigger;
   const CstmAppBar({
     super.key,
-    this.stretchTrigger,
   });
 
   @override
@@ -14,7 +12,7 @@ class CstmAppBar extends StatefulWidget {
 class _CstmAppBarState extends State<CstmAppBar> {
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
+    return AppBar(
       leading: Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Builder(
@@ -33,15 +31,9 @@ class _CstmAppBarState extends State<CstmAppBar> {
           },
         ),
       ),
-      onStretchTrigger: widget.stretchTrigger,
-      stretchTriggerOffset: 100,
-      collapsedHeight: 80,
-      floating: true,
-      pinned: true,
       titleSpacing: 0,
       elevation: 0,
       toolbarHeight: 80,
-      stretch: true,
       flexibleSpace: FlexibleSpaceBar(
         centerTitle: true,
         title: Text(
