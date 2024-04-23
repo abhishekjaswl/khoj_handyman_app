@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:mobile_app/ui/pages/loginregister/tnc.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/otp_field_style.dart';
 import 'package:otp_text_field/style.dart';
@@ -30,6 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
   final OtpFieldController _otpController = OtpFieldController();
   String userType = 'user';
+  bool isChecked = false;
 
   String otp = '';
   int _currentStep = 0;
@@ -102,7 +104,16 @@ class _RegisterPageState extends State<RegisterPage> {
         break;
       case 4:
         if (_registerFormKey.currentState!.validate()) {
-          registerUser();
+          if (isChecked == true) {
+            registerUser();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              CstmSnackBar(
+                text: 'Please accept our terms and conditions',
+                type: 'error',
+              ),
+            );
+          }
         }
         break;
     }
@@ -319,6 +330,28 @@ class _RegisterPageState extends State<RegisterPage> {
                                 text: 'Confirm Password',
                                 inputType: TextInputType.visiblePassword,
                               ),
+                              Row(
+                                children: [
+                                  Checkbox(
+                                    value: isChecked,
+                                    onChanged: (bool? value) {
+                                      setState(() {
+                                        isChecked = value!;
+                                      });
+                                    },
+                                  ),
+                                  CstmLoginSwitcher(
+                                    preText: 'I accept the',
+                                    onpressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const TnC(),
+                                      ),
+                                    ),
+                                    suffText: 'Terms & Conditions',
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),

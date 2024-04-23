@@ -28,6 +28,13 @@ exports.postBookingRequest = async (req, res, next) => {
         if (!worker) {
             return next('Worker not found!');
         }
+
+        const userDet = await UserModel.findOne({ _id: userId });
+
+        if (!userDet.status !== 'verified') {
+            return next('User not verified!');
+        }
+
         worker.bookingRequests.push({
             userId,
             dateTime,

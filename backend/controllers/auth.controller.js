@@ -90,6 +90,7 @@ exports.getRegisOTP = async (req, res, next) => {
         await AuthService.sendEmail(email, userName, message, otp, 'registration', res, next);
 
     } catch (error) {
+        console.log(error);
         return next(error);
     }
 }

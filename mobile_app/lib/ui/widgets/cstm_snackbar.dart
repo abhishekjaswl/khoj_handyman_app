@@ -25,7 +25,6 @@ class CstmSnackBar extends SnackBar {
                     color: Colors.white,
                   ),
                   textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

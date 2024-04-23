@@ -256,6 +256,7 @@ class AuthService {
 
                         transporter.sendMail(mailOptions, function (error, info) {
                             if (error) {
+                                console.log(error);
                                 return next(error);
                             }
                             else {
